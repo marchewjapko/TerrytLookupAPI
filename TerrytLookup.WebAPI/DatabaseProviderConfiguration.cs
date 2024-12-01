@@ -48,8 +48,11 @@ public static class DatabaseProviderConfiguration
 
             await dbContainer.StartAsync();
 
+            var connectionString = dbContainer.GetConnectionString();
+            connectionString += "; Include Error Detail=True";
+
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(dbContainer.GetConnectionString()));
+                options.UseNpgsql(connectionString));
 
 #if DEBUG
             Console.WriteLine("--------------------------------------------------------");

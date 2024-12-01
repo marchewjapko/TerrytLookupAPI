@@ -8,14 +8,14 @@ public sealed class SimcDto : IEquatable<SimcDto>
     ///     Terryt property: <c>WOJ</c>
     /// </summary>
     [Name("WOJ")]
-    public required int VoivodeshipId { get; init; }    
-    
+    public required int VoivodeshipId { get; init; }
+
     /// <summary>
     ///     Terryt property: <c>POW</c>
     /// </summary>
     [Name("POW")]
     public required int CountyId { get; init; }
-    
+
     /// <summary>
     ///     Terryt property: <c>NAZWA</c>
     /// </summary>
@@ -67,12 +67,7 @@ public sealed class SimcDto : IEquatable<SimcDto>
             return true;
         }
 
-        if (obj.GetType() != GetType())
-        {
-            return false;
-        }
-
-        return Equals((SimcDto)obj);
+        return obj is SimcDto dto && Equals(dto);
     }
 
     public override int GetHashCode()

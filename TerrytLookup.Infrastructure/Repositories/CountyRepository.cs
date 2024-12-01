@@ -13,21 +13,21 @@ public class CountyRepository(AppDbContext context) : ICountyRepository
         return context.BulkInsertAsync(counties);
     }
 
-    public IAsyncEnumerable<County> BrowseAllAsync(string? name, int? voivodeshipId)
+    public IAsyncEnumerable<County> BrowseAllAsync(string? name = null, int? voivodeshipId = null)
     {
         var query = context.Counties.AsNoTracking()
             .AsQueryable();
 
         if (name is not null)
         {
-            query = query.Where(c => c.Name.Contains(name));
+            query = query.Where(x => EF.Functions.ILike(EF.Functions.Unaccent(x.Name), EF.Functions.Unaccent($"%{name}%")));
         }
 
         if (voivodeshipId is not null)
         {
             query = query.Where(x => x.Voivodeship.Id == voivodeshipId);
         }
-        
+
         return query
             .Take(AppDbContext.PageSize)
             .AsAsyncEnumerable();

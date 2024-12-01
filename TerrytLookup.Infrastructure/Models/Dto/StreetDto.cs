@@ -2,9 +2,13 @@
 
 public class StreetDto
 {
-    public int TownId { get; init; }
-    
-    public int NameId { get; init; }
-
     public required string Name { get; init; }
+
+    public int NameId { get; init; }
+    
+    public int TownId { get; init; }
+
+    public int CountyId { get; init; }
+    
+    public int VoivodeshipId { get; init; }
 }

@@ -12,7 +12,7 @@ using TerrytLookup.Infrastructure.Repositories.DbContext;
 namespace TerrytLookup.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241116011704_Initial")]
+    [Migration("20241201003442_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

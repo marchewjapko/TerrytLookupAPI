@@ -34,10 +34,10 @@ public class StreetService(IStreetRepository streetRepository, IMapper mapper) :
         return streetRepository.ExistAnyAsync();
     }
 
-    public IEnumerable<StreetDto> BrowseAllAsync(string? name, int? townId)
+    public IEnumerable<StreetDto> BrowseAllAsync(string? name = null, int? townId = null)
     {
         var streets = streetRepository.BrowseAllAsync(name, townId);
 
-        return mapper.Map<IEnumerable<StreetDto>>(streets);
+        return mapper.Map<IEnumerable<StreetDto>>(streets).OrderBy(x => x.Name);
     }
 }

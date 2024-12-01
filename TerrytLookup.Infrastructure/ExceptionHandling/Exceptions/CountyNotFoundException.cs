@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 
-public class CountyNotFoundException(int voivodeshipId, int countyId) : Exception($"County with id {voivodeshipId}/{countyId} not found."), ICustomMappedException
+public class CountyNotFoundException(int voivodeshipId, int countyId)
+    : Exception($"County with id {voivodeshipId}/{countyId} not found."), ICustomMappedException
 {
     public ProblemDetails GetProblemDetails(Exception exception)
     {

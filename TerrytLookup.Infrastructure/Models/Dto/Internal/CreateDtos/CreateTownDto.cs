@@ -2,7 +2,7 @@
 
 namespace TerrytLookup.Infrastructure.Models.Dto.Internal.CreateDtos;
 
-public sealed class CreateTownDto : IEquatable<CreateTownDto>
+public sealed class CreateTownDto
 {
     public required int TerrytId { get; init; }
 
@@ -23,45 +23,5 @@ public sealed class CreateTownDto : IEquatable<CreateTownDto>
     public void CopyStreetsTo(CreateTownDto town)
     {
         foreach (var street in Streets) town.Streets.Add(street);
-    }
-
-    public bool Equals(CreateTownDto? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        return TerrytId == other.TerrytId;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        if (obj.GetType() != GetType())
-        {
-            return false;
-        }
-
-        return Equals((CreateTownDto)obj);
-    }
-
-    public override int GetHashCode()
-    {
-        return TerrytId;
     }
 }

@@ -28,7 +28,9 @@ public class CountyProfiles : Profile
             .ForMember(x => x.Name, x => x.MapFrom(a => a.Name))
             .ForMember(x => x.ValidFromDate, x => x.MapFrom(a => a.ValidFromDate))
             .ForMember(x => x.Towns, x => x.MapFrom(a => a.Towns))
-            .ForMember(x => x.Voivodeship, x => x.Ignore());
+            .ForMember(x => x.Voivodeship, x => x.Ignore())
+            .ForMember(x => x.CreateTimestamp, x => x.Ignore())
+            .ForMember(x => x.UpdateTimestamp, x => x.Ignore());
 
         CreateMap<County, CountyDto>()
             .ForMember(x => x.VoivodeshipId, x => x.MapFrom(a => a.VoivodeshipId))

@@ -26,16 +26,21 @@ public class TownProfiles : Profile
                 src.ToDictionary(x => x.Id, x => context.Mapper.Map<CreateTownDto>(x)));
 
         CreateMap<CreateTownDto, Town>()
-            //.ForMember(x => x.Id, x => x.Ignore())
             .ForMember(x => x.Id, x => x.MapFrom(a => a.TerrytId))
             .ForMember(x => x.Name, x => x.MapFrom(a => a.Name))
             .ForMember(x => x.ValidFromDate, x => x.MapFrom(a => a.ValidFromDate))
             .ForMember(x => x.Streets, x => x.MapFrom(a => a.Streets))
             .ForMember(x => x.ParentTown, x => x.MapFrom(a => a.ParentTown))
-            .ForMember(x => x.County, x => x.Ignore());
-        
+            .ForMember(x => x.County, x => x.Ignore())
+            .ForMember(x => x.CountyVoivodeshipId, x => x.Ignore())
+            .ForMember(x => x.CountyId, x => x.Ignore())
+            .ForMember(x => x.CreateTimestamp, x => x.Ignore())
+            .ForMember(x => x.UpdateTimestamp, x => x.Ignore());
+
         CreateMap<Town, TownDto>()
             .ForMember(x => x.Id, x => x.MapFrom(a => a.Id))
-            .ForMember(x => x.Name, x => x.MapFrom(a => a.Name));
+            .ForMember(x => x.Name, x => x.MapFrom(a => a.Name))
+            .ForMember(x => x.VoivodeshipId, x => x.MapFrom(a => a.County.VoivodeshipId))
+            .ForMember(x => x.CountyId, x => x.MapFrom(a => a.County.CountyId));
     }
 }

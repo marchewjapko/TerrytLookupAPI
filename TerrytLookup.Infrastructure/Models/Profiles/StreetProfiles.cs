@@ -22,15 +22,19 @@ public class StreetProfiles : Profile
             .ForMember(x => x.ValidFromDate, x => x.MapFrom(a => a.ValidFromDate));
 
         CreateMap<CreateStreetDto, Street>()
-            //.ForMember(x => x.Id, x => x.Ignore())
             .ForMember(x => x.NameId, x => x.MapFrom(a => a.TerrytNameId))
             .ForMember(x => x.Name, x => x.MapFrom(a => a.Name))
             .ForMember(x => x.Town, x => x.Ignore())
-            .ForMember(x => x.ValidFromDate, x => x.MapFrom(a => a.ValidFromDate));
+            .ForMember(x => x.ValidFromDate, x => x.MapFrom(a => a.ValidFromDate))
+            .ForMember(x => x.TownId, x => x.Ignore())
+            .ForMember(x => x.CreateTimestamp, x => x.Ignore())
+            .ForMember(x => x.UpdateTimestamp, x => x.Ignore());
 
         CreateMap<Street, StreetDto>()
             .ForMember(x => x.TownId, x => x.MapFrom(a => a.TownId))
             .ForMember(x => x.NameId, x => x.MapFrom(a => a.NameId))
-            .ForMember(x => x.Name, x => x.MapFrom(a => a.Name));
+            .ForMember(x => x.Name, x => x.MapFrom(a => a.Name))
+            .ForMember(x => x.VoivodeshipId, x => x.MapFrom(a => a.Town.County.VoivodeshipId))
+            .ForMember(x => x.CountyId, x => x.MapFrom(a => a.Town.County.CountyId));
     }
 }

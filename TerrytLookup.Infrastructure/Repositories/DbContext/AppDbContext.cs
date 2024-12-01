@@ -8,37 +8,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : Microsoft.En
     public const int PageSize = 20;
 
     public DbSet<Voivodeship> Voivodeships { get; init; }
-    
+
     public DbSet<County> Counties { get; init; }
 
     public DbSet<Street> Streets { get; init; }
 
     public DbSet<Town> Towns { get; init; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<County>()
-            .HasKey(x => new
-            {
-                TerrytVoivodeshipId = x.VoivodeshipId, TerrytCountyId = x.CountyId
-            });
-        
-        modelBuilder.Entity<Street>()
-            .HasKey(x => new
-            {
-                x.TownId, TerrytNameId = x.NameId
-            });
-        
-        base.OnModelCreating(modelBuilder);
-    }
-
-    public override int SaveChanges()
+    
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         var entries = ChangeTracker.Entries<BaseEntity>()
             .Where(e => e.State == EntityState.Modified);
 
         foreach (var entry in entries) entry.Entity.UpdateTimestamp = DateTimeOffset.UtcNow;
 
-        return base.SaveChanges();
+        return base.SaveChangesAsync(cancellationToken);
     }
 }

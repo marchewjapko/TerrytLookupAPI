@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Http;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 using TerrytLookup.Infrastructure.Models.Dto.Internal.CreateDtos;
 using TerrytLookup.Infrastructure.Models.Dto.Terryt;
-using TerrytLookup.Infrastructure.Models.Dto.Terryt.Updates;
+using TerrytLookup.Infrastructure.Services.FeedDataService.TerrytReader;
 using TerrytLookup.Infrastructure.Services.VoivodeshipService;
 
 namespace TerrytLookup.Infrastructure.Services.FeedDataService;
 
-public class FeedDataService(IMapper mapper, IVoivodeshipService voivodeshipService) : IFeedDataService
+public class FeedDataService(IMapper mapper, IVoivodeshipService voivodeshipService, ITerrytReader terrytReader) : IFeedDataService
 {
     /// <summary>
     ///     Asynchronously processes and feeds data from the provided CSV files into the appropriate data structures.
@@ -26,13 +26,9 @@ public class FeedDataService(IMapper mapper, IVoivodeshipService voivodeshipServ
     {
         try
         {
-            var tercReader = new TerrytReader(tercCsvFile);
-            var simcReader = new TerrytReader(simcCsvFile);
-            var ulicReader = new TerrytReader(ulicCsvFile);
-
-            var tercTask = tercReader.ReadAsync<TercDto>();
-            var simcTask = simcReader.ReadAsync<SimcDto>();
-            var ulicTask = ulicReader.ReadAsync<UlicDto>();
+            var tercTask = terrytReader.ReadAsync<TercDto>(tercCsvFile);
+            var simcTask = terrytReader.ReadAsync<SimcDto>(simcCsvFile);
+            var ulicTask = terrytReader.ReadAsync<UlicDto>(ulicCsvFile);
 
             await Task.WhenAll(tercTask, simcTask, ulicTask);
 
@@ -68,11 +64,6 @@ public class FeedDataService(IMapper mapper, IVoivodeshipService voivodeshipServ
         {
             throw new TerrytParsingException(ex);
         }
-    }
-
-    public Task UpdateSimc(TerrytUpdateDto<SimcUpdateDto> updateDto)
-    {
-        throw new NotImplementedException();
     }
 
     public static void AssignStreetToTown(CreateStreetDto street, Dictionary<int, CreateTownDto> towns)

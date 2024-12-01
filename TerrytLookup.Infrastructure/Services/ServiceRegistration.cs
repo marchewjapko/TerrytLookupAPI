@@ -3,6 +3,7 @@ using TerrytLookup.Core.Repositories;
 using TerrytLookup.Infrastructure.Repositories;
 using TerrytLookup.Infrastructure.Services.CountyService;
 using TerrytLookup.Infrastructure.Services.FeedDataService;
+using TerrytLookup.Infrastructure.Services.FeedDataService.TerrytReader;
 using TerrytLookup.Infrastructure.Services.StreetService;
 using TerrytLookup.Infrastructure.Services.TownService;
 using TerrytLookup.Infrastructure.Services.VoivodeshipService;
@@ -18,7 +19,7 @@ public static class ServiceRegistration
 
         services.AddScoped<ICountyRepository, CountyRepository>();
         services.AddScoped<ICountyService, CountyService.CountyService>();
-        
+
         services.AddScoped<ITownRepository, TownRepository>();
         services.AddScoped<ITownService, TownService.TownService>();
 
@@ -26,5 +27,6 @@ public static class ServiceRegistration
         services.AddScoped<IStreetService, StreetService.StreetService>();
 
         services.AddScoped<IFeedDataService, FeedDataService.FeedDataService>();
+        services.AddScoped<ITerrytReader, TerrytReader>();
     }
 }

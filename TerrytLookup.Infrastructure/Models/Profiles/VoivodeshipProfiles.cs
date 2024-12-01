@@ -25,7 +25,9 @@ public class VoivodeshipProfiles : Profile
             .ForMember(x => x.Id, x => x.MapFrom(a => a.TerrytId))
             .ForMember(x => x.Name, x => x.MapFrom(a => a.Name))
             .ForMember(x => x.ValidFromDate, x => x.MapFrom(a => a.ValidFromDate))
-            .ForMember(x => x.Counties, x => x.MapFrom(a => a.Counties));
+            .ForMember(x => x.Counties, x => x.MapFrom(a => a.Counties))
+            .ForMember(x => x.CreateTimestamp, x => x.Ignore())
+            .ForMember(x => x.UpdateTimestamp, x => x.Ignore());
 
         CreateMap<Voivodeship, VoivodeshipDto>()
             .ForMember(x => x.Id, x => x.MapFrom(a => a.Id))

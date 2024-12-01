@@ -14,14 +14,14 @@ public class VoivodeshipService(IVoivodeshipRepository voivodeshipRepository, IM
         var entities = mapper.Map<IEnumerable<Voivodeship>>(voivodeships)
             .ToList();
 
-        return voivodeshipRepository.AddRangeAsync(entities); 
+        return voivodeshipRepository.AddRangeAsync(entities);
     }
 
     public IEnumerable<VoivodeshipDto> BrowseAllAsync()
     {
         var voivodeships = voivodeshipRepository.BrowseAllAsync();
 
-        return mapper.Map<IEnumerable<VoivodeshipDto>>(voivodeships);
+        return mapper.Map<IEnumerable<VoivodeshipDto>>(voivodeships).OrderBy(x => x.Name);
     }
 
     public async Task<VoivodeshipDto> GetByIdAsync(int id)

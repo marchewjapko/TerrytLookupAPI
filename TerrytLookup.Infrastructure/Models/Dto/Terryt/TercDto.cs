@@ -34,20 +34,6 @@ public sealed class TercDto : IEquatable<TercDto>
     [Name("STAN_NA")]
     public required DateOnly ValidFromDate { get; init; }
 
-    public bool IsVoivodeship()
-    {
-        const string voivodeship = "województwo";
-
-        return string.Equals(EntityType, voivodeship, StringComparison.InvariantCultureIgnoreCase);
-    }
-
-    public bool IsCounty()
-    {
-        string[] county = ["powiat", "miasto na prawach powiatu", "miasto stołeczne, na prawach powiatu"];
-
-        return Array.Exists(county, x => CountyId.HasValue && string.Equals(EntityType, x, StringComparison.InvariantCultureIgnoreCase));
-    }
-
     public bool Equals(TercDto? other)
     {
         if (other is null)
@@ -63,6 +49,20 @@ public sealed class TercDto : IEquatable<TercDto>
         return VoivodeshipId == other.VoivodeshipId && CountyId == other.CountyId;
     }
 
+    public bool IsVoivodeship()
+    {
+        const string voivodeship = "województwo";
+
+        return string.Equals(EntityType, voivodeship, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    public bool IsCounty()
+    {
+        string[] county = ["powiat", "miasto na prawach powiatu", "miasto stołeczne, na prawach powiatu"];
+
+        return Array.Exists(county, x => CountyId.HasValue && string.Equals(EntityType, x, StringComparison.InvariantCultureIgnoreCase));
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is null)
@@ -75,12 +75,7 @@ public sealed class TercDto : IEquatable<TercDto>
             return true;
         }
 
-        if (obj is TercDto)
-        {
-            return false;
-        }
-
-        return Equals((TercDto)obj);
+        return obj is TercDto dto && Equals(dto);
     }
 
     public override int GetHashCode()

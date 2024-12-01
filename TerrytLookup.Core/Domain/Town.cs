@@ -16,7 +16,12 @@ public class Town : BaseEntity
     [ForeignKey("ParentTownId")]
     public Town? ParentTown { get; set; }
 
+    [ForeignKey(nameof(CountyVoivodeshipId) + "," + nameof(CountyId))]
     public required County County { get; set; }
+    
+    public int CountyVoivodeshipId { get; set; }
+
+    public int CountyId { get; set; }
 
     public required ICollection<Street> Streets { get; set; }
 }

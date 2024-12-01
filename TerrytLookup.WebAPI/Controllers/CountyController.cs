@@ -21,7 +21,7 @@ public class CountyController(ICountyService countyService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CountyDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     [HttpGet]
-    public IActionResult BrowseAllCounties(string? name, int? voivodeshipId)
+    public IActionResult BrowseAllCounties(string? name = null, int? voivodeshipId = null)
     {
         var result = countyService.BrowseAllAsync(name, voivodeshipId);
 

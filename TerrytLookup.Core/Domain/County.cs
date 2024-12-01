@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace TerrytLookup.Core.Domain;
 
 [Index(nameof(Name))]
 [Index(nameof(VoivodeshipId), nameof(CountyId), IsUnique = true)]
+[PrimaryKey(nameof(VoivodeshipId), nameof(CountyId))]
 public class County : BaseEntity
 {
     public int VoivodeshipId { get; set; }

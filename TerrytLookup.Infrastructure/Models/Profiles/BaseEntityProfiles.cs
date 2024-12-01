@@ -9,6 +9,7 @@ public class BaseEntityProfiles : Profile
     {
         CreateMap<object, BaseEntity>()
             .ForMember(x => x.CreateTimestamp, opt => opt.Ignore())
-            .ForMember(x => x.UpdateTimestamp, opt => opt.Ignore());
+            .ForMember(x => x.UpdateTimestamp, opt => opt.Ignore())
+            .ForMember(x => x.ValidFromDate, opt => opt.Ignore());
     }
 }

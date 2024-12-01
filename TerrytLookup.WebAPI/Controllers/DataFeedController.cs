@@ -2,7 +2,6 @@
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
-using TerrytLookup.Infrastructure.Models.Dto.Terryt.Updates;
 using TerrytLookup.Infrastructure.Services.CountyService;
 using TerrytLookup.Infrastructure.Services.FeedDataService;
 using TerrytLookup.Infrastructure.Services.StreetService;
@@ -75,22 +74,5 @@ public class DataFeedController(
         logger.Log(LogLevel.Information, "Terryt data initialized.");
 
         return NoContent();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    [HttpPut]
-    public Task<IActionResult> UpdateSimc([Required] IFormFile tercXmlFile)
-    {
-        var deserializer = new XmlSerializer(typeof(TerrytUpdateDto<TercUpdateDto>));
-        
-        var reader = tercXmlFile.OpenReadStream();
-        
-        var updateDto = deserializer.Deserialize(reader) as TerrytUpdateDto<TercUpdateDto>;
-        
-        reader.Close();
-        
-        throw new NotImplementedException();
     }
 }

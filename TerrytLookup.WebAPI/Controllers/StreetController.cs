@@ -20,7 +20,7 @@ public class StreetController(IStreetService streetService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<StreetDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     [HttpGet]
-    public IActionResult BrowseAllStreets(string? name, int? townId)
+    public IActionResult BrowseAllStreets(string? name = null, int? townId = null)
     {
         var result = streetService.BrowseAllAsync(name, townId);
 
@@ -36,7 +36,7 @@ public class StreetController(IStreetService streetService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StreetDto))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     [HttpGet("{townId:int}/{nameId:int}")]
-    public async Task<IActionResult> GetTownById(int townId, int nameId)
+    public async Task<IActionResult> GetStreetById(int townId, int nameId)
     {
         var result = await streetService.GetByIdAsync(townId, nameId);
 

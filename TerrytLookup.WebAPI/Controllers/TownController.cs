@@ -21,7 +21,7 @@ public class TownController(ITownService townService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TownDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
     [HttpGet]
-    public IActionResult BrowseAllVoivodeships(string? name, int? voivodeshipId, int? countyId)
+    public IActionResult BrowseAllTowns(string? name = null, int? voivodeshipId = null, int? countyId = null)
     {
         var result = townService.BrowseAllAsync(name, voivodeshipId, countyId);
 
