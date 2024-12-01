@@ -20,7 +20,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ env.DOCKER_HUB_USERNAME }}
+          username: ${{ vars.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Log in to the Container registry
@@ -35,7 +35,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ github.DOCKER_HUB_USERNAME }}/terryt-lookup-api-web-api
+            ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api-web-api
             ghcr.io/terryt-lookup-api-web-api
 
       - name: Build and push Docker images
