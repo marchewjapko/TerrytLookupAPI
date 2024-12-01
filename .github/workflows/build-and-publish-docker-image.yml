@@ -20,7 +20,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          username: ${{ github.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Log in to the Container registry
@@ -35,7 +35,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            marchewjapko/rental-manager-api
+            ${{ github.DOCKER_HUB_USERNAME }}/${{ github.repository }}
             ghcr.io/${{ github.repository }}
 
       - name: Build and push Docker images
