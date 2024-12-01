@@ -4,7 +4,8 @@ TerrytLookupAPI is a RESTful web api made to query [Terryt Registry](https://ete
 The purpose of the API is to allow other systems to use address data that is compliant with Terryt. This way they can avoid pitfalls of string-based and user inputted address information.
 
 # Status
-[ToDo]
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=coverage)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
 
 # Components
 
