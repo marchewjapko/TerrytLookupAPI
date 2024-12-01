@@ -40,7 +40,6 @@ public class TownProfiles : Profile
         CreateMap<Town, TownDto>()
             .ForMember(x => x.Id, x => x.MapFrom(a => a.Id))
             .ForMember(x => x.Name, x => x.MapFrom(a => a.Name))
-            .ForMember(x => x.VoivodeshipId, x => x.MapFrom(a => a.County.VoivodeshipId))
-            .ForMember(x => x.CountyId, x => x.MapFrom(a => a.County.CountyId));
+            .ForMember(x => x.County, x => x.MapFrom(a => a.County));
     }
 }

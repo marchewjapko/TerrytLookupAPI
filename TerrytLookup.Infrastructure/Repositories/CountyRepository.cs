@@ -30,6 +30,7 @@ public class CountyRepository(AppDbContext context) : ICountyRepository
 
         return query
             .Take(AppDbContext.PageSize)
+            .Include(x => x.Voivodeship)
             .AsAsyncEnumerable();
     }
 

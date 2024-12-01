@@ -5,8 +5,6 @@ public class TownDto
     public int Id { get; init; }
 
     public required string Name { get; init; }
-
-    public int VoivodeshipId { get; init; }
-
-    public int CountyId { get; init; }
+    
+    public required CountyDto County { get; init; }
 }

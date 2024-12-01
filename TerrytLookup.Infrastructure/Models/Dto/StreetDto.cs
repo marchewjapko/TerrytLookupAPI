@@ -8,7 +8,5 @@ public class StreetDto
     
     public int TownId { get; init; }
 
-    public int CountyId { get; init; }
-    
-    public int VoivodeshipId { get; init; }
+    public required TownDto Town { get; init; }
 }

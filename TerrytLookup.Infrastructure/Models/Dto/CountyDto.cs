@@ -7,4 +7,6 @@ public class CountyDto
     public int VoivodeshipId { get; init; }
 
     public int CountyId { get; init; }
+    
+    public required VoivodeshipDto Voivodeship { get; init; }
 }

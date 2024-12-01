@@ -34,7 +34,6 @@ public class StreetProfiles : Profile
             .ForMember(x => x.TownId, x => x.MapFrom(a => a.TownId))
             .ForMember(x => x.NameId, x => x.MapFrom(a => a.NameId))
             .ForMember(x => x.Name, x => x.MapFrom(a => a.Name))
-            .ForMember(x => x.VoivodeshipId, x => x.MapFrom(a => a.Town.County.VoivodeshipId))
-            .ForMember(x => x.CountyId, x => x.MapFrom(a => a.Town.County.CountyId));
+            .ForMember(x => x.Town, x => x.MapFrom(a => a.Town));
     }
 }
