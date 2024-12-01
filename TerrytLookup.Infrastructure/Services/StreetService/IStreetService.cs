@@ -11,5 +11,5 @@ public interface IStreetService
 
     Task<bool> ExistAnyAsync();
 
-    public IEnumerable<StreetDto> BrowseAllAsync(string? name, int? townId);
+    public IEnumerable<StreetDto> BrowseAllAsync(string? name = null, int? townId = null);
 }

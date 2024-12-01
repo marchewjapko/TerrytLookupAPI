@@ -65,7 +65,7 @@ public class TownRepositoryTests
             .Build();
 
         Context.AddRange(towns);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         //Act
         var result = await Repository.ExistAnyAsync();
@@ -95,14 +95,14 @@ public class TownRepositoryTests
             .Build();
 
         Context.AddRange(towns);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         //Act
         var result = await Repository.BrowseAllAsync()
             .ToListAsync();
 
         //Assert
-        Assert.That(result.Count, Is.EqualTo(10));
+        Assert.That(result, Has.Count.EqualTo(10));
     }
 
     [Test]
@@ -122,7 +122,7 @@ public class TownRepositoryTests
             .Build();
 
         Context.AddRange(towns);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         //Act
         var result = await Repository.BrowseAllAsync(townName)
@@ -130,7 +130,7 @@ public class TownRepositoryTests
 
         //Assert
         Assert.Multiple(() => {
-            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result[0].Name, Is.EqualTo(townName));
             Assert.That(result[0].Id, Is.EqualTo(towns[0].Id));
         });
@@ -211,7 +211,7 @@ public class TownRepositoryTests
 
         //Assert
         Assert.Multiple(() => {
-            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result[0].Name, Is.EqualTo(towns[0].Name));
             Assert.That(result[0].Id, Is.EqualTo(towns[0].Id));
             Assert.That(result[0].CountyVoivodeshipId, Is.EqualTo(newVoivodeship.Id));

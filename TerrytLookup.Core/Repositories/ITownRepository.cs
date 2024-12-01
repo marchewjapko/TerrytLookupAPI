@@ -6,7 +6,7 @@ public interface ITownRepository
 {
     Task AddRangeAsync(IList<Town> towns);
 
-    IAsyncEnumerable<Town> BrowseAllAsync(string? name, int? voivodeshipId, int? countyId);
+    IAsyncEnumerable<Town> BrowseAllAsync(string? name = null, int? voivodeshipId = null, int? countyId = null);
 
     Task<Town?> GetByIdAsync(int id);
 

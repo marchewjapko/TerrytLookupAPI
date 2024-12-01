@@ -7,7 +7,7 @@ public interface ICountyService
 {
     public Task AddRange(IEnumerable<CreateCountyDto> counties);
 
-    public IEnumerable<CountyDto> BrowseAllAsync(string? name, int? voivodeshipId);
+    public IEnumerable<CountyDto> BrowseAllAsync(string? name = null, int? voivodeshipId = null);
 
     public Task<CountyDto> GetByIdAsync(int voivodeshipId, int countyId);
 
