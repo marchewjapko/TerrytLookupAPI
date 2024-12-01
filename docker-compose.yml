@@ -1,0 +1,28 @@
+name: terryt-lookup-api
+
+services:
+    terryt-lookup-api-web-api:
+        container_name: terryt-lookup-api-web-api
+        environment:
+          - TZ=Europe/Warsaw
+          - POSTGRES_USER=${DB_USERNAME}
+          - POSTGRES_PASSWORD=${DB_PASSWORD}
+        image: "marchewjapko/terryt-lookup-api:latest"
+        ports:
+          - "${WEB_API_PORT}:80"
+        depends_on:
+          - terryt-lookup-api-db
+          
+    terryt-lookup-api-db:
+        container_name: terryt-lookup-api-db
+        image: "postgres:latest"
+        ports:
+          - "5432"
+        volumes:
+          - "terryt-lookup-api-database-volume:/var/lib/postgresql/data"
+        environment:
+          POSTGRES_USER: ${DB_USERNAME}
+          POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+volumes:
+  terryt-lookup-api-database-volume:

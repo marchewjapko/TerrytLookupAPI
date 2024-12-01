@@ -25,6 +25,20 @@ The purpose of the API is to allow other systems to use address data that is com
 
 The entire system is contained in docker containers for easy deployment. 
 
+# Docker
+
+To build the image:
+
+    docker build -t [docker username]/rental-manager-api -f .\TerrytLookup.WebAPI\Dockerfile .
+
+To publish the image:
+
+    docker push marchewjapko/terryt-lookup-api:latest
+
+To run compose:
+
+    docker compose --env-file .env up -d
+
 # Important considerations
 
 Terryt registry has an odd data scheme. E.g.: counties do not have any single unique identifier, thusly the system relies on composite keys for some entities 

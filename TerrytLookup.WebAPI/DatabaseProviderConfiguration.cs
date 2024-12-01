@@ -33,38 +33,63 @@ public static class DatabaseProviderConfiguration
     {
         if (builder.Configuration["DatabaseType"] == "SingleUse")
         {
-            var password = Guid.NewGuid()
-                .ToString();
-
-            var name = $"TerrytLookup-API-runtime-database-{Guid.NewGuid()
-                .ToString()}";
-
-            var dbContainer = new PostgreSqlBuilder()
-                .WithImage("postgres:latest")
-                .WithPassword(password)
-                .WithName(name)
-                .WithAutoRemove(true)
-                .Build();
-
-            await dbContainer.StartAsync();
-
-            var connectionString = dbContainer.GetConnectionString();
-            connectionString += "; Include Error Detail=True";
-
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(connectionString));
-
-#if DEBUG
-            Console.WriteLine("--------------------------------------------------------");
-            Console.WriteLine("New database configuration:");
-            Console.WriteLine($"Connection string: {dbContainer.GetConnectionString()}");
-            Console.WriteLine("--------------------------------------------------------");
-#endif
+            await ConfigureSingleUseDb(builder);
 
             return;
         }
 
+        ConfigurePersistentDb(builder);
+    }
+
+    private static void ConfigurePersistentDb(WebApplicationBuilder builder)
+    {
+        var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+        var username = Environment.GetEnvironmentVariable("POSTGRES_USER");
+
+        var connectionString = string.Format(builder.Configuration.GetConnectionString("DbConnectionString")!, username, password);
+
+        var envs = Environment.GetEnvironmentVariables();
+
+        Console.WriteLine("--envs--");
+        foreach (var env in envs)
+        {
+            Console.WriteLine($"env: {env}");
+        }
+        
+        Console.WriteLine($"Using PostgreSQL connection: {connectionString}");
+        
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnectionString")));
+            options.UseNpgsql(connectionString));
+    }
+
+    private static async Task ConfigureSingleUseDb(WebApplicationBuilder builder)
+    {
+        var password = Guid.NewGuid()
+            .ToString();
+
+        var name = $"TerrytLookup-API-runtime-database-{Guid.NewGuid()
+            .ToString()}";
+
+        var dbContainer = new PostgreSqlBuilder()
+            .WithImage("postgres:latest")
+            .WithPassword(password)
+            .WithName(name)
+            .WithAutoRemove(true)
+            .Build();
+
+        await dbContainer.StartAsync();
+
+        var containerConnectionString = dbContainer.GetConnectionString();
+        containerConnectionString += "; Include Error Detail=True";
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(containerConnectionString));
+
+#if DEBUG
+        Console.WriteLine("--------------------------------------------------------");
+        Console.WriteLine("New database configuration:");
+        Console.WriteLine($"Connection string: {dbContainer.GetConnectionString()}");
+        Console.WriteLine("--------------------------------------------------------");
+#endif
     }
 }
