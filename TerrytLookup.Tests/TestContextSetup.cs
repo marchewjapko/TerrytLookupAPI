@@ -33,6 +33,8 @@ internal static class TestContextSetup
 
         await newContext.Database.MigrateAsync();
 
+        await newContext.Database.ExecuteSqlRawAsync("CREATE EXTENSION unaccent;");
+
         return newContext;
     }
 }
