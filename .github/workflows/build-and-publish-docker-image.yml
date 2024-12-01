@@ -36,7 +36,7 @@ jobs:
         with:
           images: |
             ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api-web-api
-            ghcr.io/terryt-lookup-api-web-api
+            ghcr.io/TerrytLookupAPI
 
       - name: Build and push Docker images
         id: push
