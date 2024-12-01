@@ -2,9 +2,9 @@
 <CoverageSession>
   <Summary numSequencePoints="1225" visitedSequencePoints="1004" numBranchPoints="84" visitedBranchPoints="79" sequenceCoverage="81.95" branchCoverage="94.04" maxCyclomaticComplexity="201" minCyclomaticComplexity="22" visitedClasses="66" numClasses="68" visitedMethods="193" numMethods="196" />
   <Modules>
-    <Module hash="3B1856D4-C8B4-4063-A9E5-936311B34065">
+    <Module hash="D84B0996-44B0-4568-B266-88EA8A6E3E5F">
       <ModulePath>TerrytLookup.Infrastructure.dll</ModulePath>
-      <ModuleTime>2024-12-01T07:59:44</ModuleTime>
+      <ModuleTime>2024-12-01T08:04:41</ModuleTime>
       <ModuleName>TerrytLookup.Infrastructure</ModuleName>
       <Files>
         <File uid="1" fullPath="/home/runner/work/TerrytLookupAPI/TerrytLookupAPI/TerrytLookup.Infrastructure/Services/ServiceRegistration.cs" />
@@ -3048,9 +3048,9 @@
         </Class>
       </Classes>
     </Module>
-    <Module hash="8FE92CE9-41DD-47C0-B24B-BCDBA3C41178">
+    <Module hash="F34F90B2-2F30-41C5-929A-3BDE28EE8CA6">
       <ModulePath>TerrytLookup.Core.dll</ModulePath>
-      <ModuleTime>2024-12-01T07:59:44</ModuleTime>
+      <ModuleTime>2024-12-01T08:04:41</ModuleTime>
       <ModuleName>TerrytLookup.Core</ModuleName>
       <Files>
         <File uid="41" fullPath="/home/runner/work/TerrytLookupAPI/TerrytLookupAPI/TerrytLookup.Core/Domain/BaseEntity.cs" />
@@ -3334,9 +3334,9 @@
         </Class>
       </Classes>
     </Module>
-    <Module hash="DD0ADCBE-97C8-4C1A-8CF8-1B4C6FD19DE7">
+    <Module hash="BCC4173E-8708-4168-AD8D-7A864BABC4A9">
       <ModulePath>TerrytLookup.WebAPI.dll</ModulePath>
-      <ModuleTime>2024-12-01T07:59:44</ModuleTime>
+      <ModuleTime>2024-12-01T08:04:41</ModuleTime>
       <ModuleName>TerrytLookup.WebAPI</ModuleName>
       <Files>
         <File uid="46" fullPath="/home/runner/work/TerrytLookupAPI/TerrytLookupAPI/TerrytLookup.WebAPI/Program.cs" />
