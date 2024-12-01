@@ -35,8 +35,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ github.DOCKER_HUB_USERNAME }}/${{ github.repository }}
-            ghcr.io/${{ github.repository }}
+            ${{ github.DOCKER_HUB_USERNAME }}/terryt-lookup-api-web-api
+            ghcr.io/terryt-lookup-api-web-api
 
       - name: Build and push Docker images
         id: push
