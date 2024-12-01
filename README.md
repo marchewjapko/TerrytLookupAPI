@@ -26,4 +26,4 @@ The entire system is contained in docker containers for easy deployment.
 
 # Important considerations
 
-Terryt registry has an odd data scheme. E.g.: counties do not have any single unique identifier, thusly the system relies on composite keys for some entities 
+Terryt registry has an odd data scheme. E.g.: counties do not have any single unique identifier, thusly the system relies on composite keys for some entities
