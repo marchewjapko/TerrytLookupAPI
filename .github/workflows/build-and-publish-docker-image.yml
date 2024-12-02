@@ -6,22 +6,9 @@ on:
   workflow_dispatch:
     
 jobs:
-  build:
-    name: Build Docker image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api_web-api
-            ghcr.io/${{ github.actor }}/terryt-lookup-api_web-api
-
   push-docker-hub:
     name: Push to Docker Hub
     runs-on: ubuntu-latest
-    needs: build
     permissions:
       packages: write
       contents: read
@@ -36,6 +23,13 @@ jobs:
         with:
           username: ${{ vars.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api_web-api
 
       - name: Build and push Docker image to Docker Hub
         uses: docker/build-push-action@v6
@@ -64,6 +58,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api_web-api
 
       - name: Build and push Docker image to GHCR
         uses: docker/build-push-action@v6
