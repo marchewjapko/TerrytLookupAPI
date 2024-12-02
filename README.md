@@ -29,11 +29,11 @@ The entire system is contained in docker containers for easy deployment.
 
 To build the image:
 
-    docker build -t [docker username]/rental-manager-api -f .\TerrytLookup.WebAPI\Dockerfile .
+    docker build -t [docker username]/terryt-lookup-api_web-api -f .\TerrytLookup.WebAPI\Dockerfile .
 
 To publish the image:
 
-    docker push marchewjapko/terryt-lookup-api:latest
+    docker push marchewjapko/terryt-lookup-api_web-api:latest
 
 To run compose:
 
