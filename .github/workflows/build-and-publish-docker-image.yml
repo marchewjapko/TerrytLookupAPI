@@ -29,7 +29,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api_web-api
+            ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api-web-api
 
       - name: Build and push Docker image to Docker Hub
         uses: docker/build-push-action@v6
@@ -63,7 +63,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api_web-api
+            ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api-web-api
 
       - name: Build and push Docker image to GHCR
         uses: docker/build-push-action@v6
