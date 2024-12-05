@@ -22,7 +22,7 @@ FROM build AS publish
 RUN dotnet publish "TerrytLookup.WebAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
-RUN ["apt-get -y update", "apt-get --no-install-recommends -y install curl", "apt-get clean", "adduser --disabled-password myuser"]
+CMD ["sh -c", "apt-get -y update &&", "apt-get --no-install-recommends -y install curl &&", "apt-get clean &&", "adduser --disabled-password"]
 USER myuser
 WORKDIR /app
 COPY --from=publish /app/publish .
