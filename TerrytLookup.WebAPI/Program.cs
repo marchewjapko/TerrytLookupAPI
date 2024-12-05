@@ -51,7 +51,7 @@ builder.Services.AddProblemDetails(options => {
 
 if (DatabaseProviderConfiguration.ConnectionString is null)
 {
-    throw new Exception("Database provider not initialized.");
+    throw new NullReferenceException("Database provider not initialized.");
 }
 
 builder.Services.AddHealthChecks()
