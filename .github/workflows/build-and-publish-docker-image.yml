@@ -36,7 +36,7 @@ jobs:
         with:
           images: |
             ${{ vars.DOCKER_HUB_USERNAME }}/terryt-lookup-api-web-api
-            tags: ghcr.io/${{ github.actor }}/terryt-lookup-api-web-api
+            ghcr.io/${{ github.actor }}/terryt-lookup-api-web-api
 
       - name: Build and push Docker image to Docker Hub
         uses: docker/build-push-action@v6
