@@ -5,8 +5,10 @@ The purpose of the API is to allow other systems to use address data that is com
 
 # Status
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=coverage)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
-
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=coverage)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI) <br/> <br/>
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI) <br/> <br/>
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
 # Components
 
 - WebAPI
