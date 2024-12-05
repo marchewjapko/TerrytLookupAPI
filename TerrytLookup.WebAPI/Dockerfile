@@ -22,10 +22,10 @@ FROM build AS publish
 RUN dotnet publish "TerrytLookup.WebAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
-CMD ["sh -c", "apt-get -y update &&", "apt-get --no-install-recommends -y install curl &&", "apt-get clean &&", "adduser --disabled-password"]
-USER myuser
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN ["sh", "-c", "apt-get -y update && apt-get --no-install-recommends -y install curl && apt-get clean && useradd -m app-user"]
+USER app-user
 ENTRYPOINT ["dotnet", "TerrytLookup.WebAPI.dll"]
 
 HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD ["curl", "-f", "$HEALTH_CHECK_PATH", "|| exit 1"]
