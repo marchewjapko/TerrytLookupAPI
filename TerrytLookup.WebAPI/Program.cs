@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TerrytLookup.Infrastructure.ExceptionHandling;
+using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 using TerrytLookup.Infrastructure.Extensions;
 using TerrytLookup.Infrastructure.Models.Profiles;
 using TerrytLookup.Infrastructure.Repositories.DbContext;
@@ -51,7 +52,7 @@ builder.Services.AddProblemDetails(options => {
 
 if (DatabaseProviderConfiguration.ConnectionString is null)
 {
-    throw new NullReferenceException("Database provider not initialized.");
+    throw new InvalidDatabaseConfigurationException("Database provider not initialized.");
 }
 
 builder.Services.AddHealthChecks()
