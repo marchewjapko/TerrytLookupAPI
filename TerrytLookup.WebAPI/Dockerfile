@@ -22,7 +22,7 @@ FROM build AS publish
 RUN dotnet publish "TerrytLookup.WebAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
-RUN apt-get -y update; apt-get -y install curl
+RUN apt-get -y update; apt-get --no-install-recommends -y install curl
 RUN adduser --disabled-password myuser
 USER myuser
 WORKDIR /app
