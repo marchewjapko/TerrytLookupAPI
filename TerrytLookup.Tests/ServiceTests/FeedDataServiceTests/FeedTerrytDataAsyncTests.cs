@@ -59,7 +59,7 @@ public class FeedTerrytDataAsyncTests
 
         var townsDict = new Faker<CreateTownDto>()
             .RuleFor(x => x.TerrytId, f => f.IndexFaker)
-            .RuleFor(x => x.CountyTerrytId, _ => countiesDict.OrderBy(arg => Guid.NewGuid())
+            .RuleFor(x => x.CountyTerrytId, _ => countiesDict.OrderBy(_ => Guid.NewGuid())
                 .First()
                 .Key)
             .Generate(30)
@@ -89,16 +89,6 @@ public class FeedTerrytDataAsyncTests
     public void FeedTerrytDataAsync_ShouldThrowTerrytParsingException()
     {
         //Arrange
-        var tercSet = Builder<TercDto>.CreateListOfSize(10)
-            .Build()
-            .ToHashSet();
-        var simcSet = Builder<SimcDto>.CreateListOfSize(10)
-            .Build()
-            .ToHashSet();
-        var ulicSet = Builder<UlicDto>.CreateListOfSize(10)
-            .Build()
-            .ToHashSet();
-
         _terrytReader.Setup(x => x.ReadAsync<TercDto>(It.IsAny<IFormFile>()))
             .ThrowsAsync(new Exception("TestException"));
 

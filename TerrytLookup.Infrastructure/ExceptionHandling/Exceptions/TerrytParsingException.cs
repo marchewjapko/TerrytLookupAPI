@@ -10,7 +10,7 @@ public class TerrytParsingException(Exception innerException)
     {
         return new ProblemDetails
         {
-            Title = "Unable to read file",
+            Title = "Unable to read file.",
             Detail = exception.Message,
             Status = StatusCodes.Status400BadRequest
         };

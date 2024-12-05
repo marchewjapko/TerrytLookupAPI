@@ -9,7 +9,7 @@ public class TownNotFoundException(int id) : Exception($"Town with id {id} not f
     {
         return new ProblemDetails
         {
-            Title = "Town not found",
+            Title = "Town not found.",
             Detail = exception.Message,
             Status = StatusCodes.Status404NotFound
         };

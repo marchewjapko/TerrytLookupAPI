@@ -10,7 +10,7 @@ public class InvalidFileContentTypeExtensionException(string contentType)
     {
         return new ProblemDetails
         {
-            Title = "Invalid content type",
+            Title = "Invalid content type.",
             Detail = exception.Message,
             Status = StatusCodes.Status400BadRequest
         };

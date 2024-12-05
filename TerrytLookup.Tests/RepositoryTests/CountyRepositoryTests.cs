@@ -202,7 +202,7 @@ public class CountyRepositoryTests
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.CountyId, Is.EqualTo(counties.First()
                 .CountyId));
-            Assert.That(result!.VoivodeshipId, Is.EqualTo(counties.First()
+            Assert.That(result.VoivodeshipId, Is.EqualTo(counties.First()
                 .VoivodeshipId));
         });
     }

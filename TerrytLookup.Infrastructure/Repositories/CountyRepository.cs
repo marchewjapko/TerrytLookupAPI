@@ -36,7 +36,8 @@ public class CountyRepository(AppDbContext context) : ICountyRepository
 
     public Task<County?> GetByIdAsync(int voivodeshipId, int countyId)
     {
-        return context.Counties.FirstOrDefaultAsync(x => x.VoivodeshipId == voivodeshipId && x.CountyId == countyId);
+        return context.Counties.Include(x => x.Voivodeship)
+            .FirstOrDefaultAsync(x => x.VoivodeshipId == voivodeshipId && x.CountyId == countyId);
     }
 
     public Task<bool> ExistAnyAsync()

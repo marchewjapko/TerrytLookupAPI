@@ -32,9 +32,7 @@ internal static class TestContextSetup
         var newContext = new AppDbContext(contextOptions.Options);
 
         await newContext.Database.MigrateAsync();
-
-        await newContext.Database.ExecuteSqlRawAsync("CREATE EXTENSION unaccent;");
-
+        
         return newContext;
     }
 }

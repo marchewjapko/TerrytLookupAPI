@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 using TerrytLookup.Infrastructure.Services.CountyService;

@@ -28,7 +28,7 @@ public class VoivodeshipController(IVoivodeshipService voivodeshipService) : Con
     /// <summary>
     ///     Retrieves a specific voivodeship by its unique identifier.
     /// </summary>
-    /// <param name="id">The unique identifier of the voivodeship.</param>
+    /// <param name="id" example="14">The unique identifier of the voivodeship.</param>
     /// <returns>The <see cref="VoivodeshipDto" /> representing the voivodeship.</returns>
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VoivodeshipDto))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]

@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
-using TerrytLookup.Infrastructure.Models.Dto;
 using TerrytLookup.Infrastructure.Services.CountyService;
 using TerrytLookup.Infrastructure.Services.FeedDataService;
 using TerrytLookup.Infrastructure.Services.StreetService;

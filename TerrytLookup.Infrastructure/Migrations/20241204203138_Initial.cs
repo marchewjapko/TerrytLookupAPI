@@ -11,6 +11,9 @@ namespace TerrytLookup.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:unaccent", ",,");
+
             migrationBuilder.CreateTable(
                 name: "Voivodeships",
                 columns: table => new

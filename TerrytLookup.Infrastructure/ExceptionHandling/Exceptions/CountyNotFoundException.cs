@@ -10,7 +10,7 @@ public class CountyNotFoundException(int voivodeshipId, int countyId)
     {
         return new ProblemDetails
         {
-            Title = "County not found",
+            Title = "County not found.",
             Detail = exception.Message,
             Status = StatusCodes.Status404NotFound
         };

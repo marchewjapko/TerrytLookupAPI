@@ -1,14 +1,9 @@
-﻿using AutoMapper;
-using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
+using TerrytLookup.Infrastructure.Extensions;
 using TerrytLookup.Infrastructure.Repositories.DbContext;
-using TerrytLookup.WebAPI;
 
 namespace TerrytLookup.Tests.RegistrationTests;
 
@@ -31,9 +26,6 @@ public class DatabaseProviderConfigurationTests
         var app = builder.Build();
         
         using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        var zz = dbContext.Database.GetConnectionString();
         
         // Assert
         Assert.That(builder.Services.ToList().Any(x => x.ServiceType == typeof(DbContextOptions<AppDbContext>)), Is.True);
@@ -48,7 +40,10 @@ public class DatabaseProviderConfigurationTests
         builder.Configuration.AddInMemoryCollection(new List<KeyValuePair<string, string?>>()
         {
             new("DatabaseType", "Persistent"),
-            new("ConnectionStrings:DbConnectionString", "PeePeePooPoo"),
+            new("DbConnection:DefaultConnection:Host", "localhost"),
+            new("DbConnection:DefaultConnection:Port", "1"),
+            new("DbConnection:DefaultConnection:User", "user"),
+            new("DbConnection:DefaultConnection:Password", "123"),
         });
         
         // Act
@@ -57,9 +52,6 @@ public class DatabaseProviderConfigurationTests
         var app = builder.Build();
         
         using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        var zz = dbContext.Database.GetConnectionString();
         
         // Assert
         Assert.That(builder.Services.ToList().Any(x => x.ServiceType == typeof(DbContextOptions<AppDbContext>)), Is.True);

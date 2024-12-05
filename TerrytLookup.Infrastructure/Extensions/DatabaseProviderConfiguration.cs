@@ -1,14 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using TerrytLookup.Infrastructure.Repositories.DbContext;
 using Testcontainers.PostgreSql;
 
-namespace TerrytLookup.WebAPI;
+namespace TerrytLookup.Infrastructure.Extensions;
 
 /// <summary>
 ///     Contains extension method <see cref="ConfigureDatabaseProvider" /> for database provider configuration.
 /// </summary>
 public static class DatabaseProviderConfiguration
 {
+    public static string? ConnectionString { get; private set; }
+
     /// <summary>
     ///     Configures the database provider for the application based on the specified database type in the configuration.
     /// </summary>
@@ -43,23 +47,12 @@ public static class DatabaseProviderConfiguration
 
     private static void ConfigurePersistentDb(WebApplicationBuilder builder)
     {
-        var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
-        var username = Environment.GetEnvironmentVariable("POSTGRES_USER");
+        var connectionString = builder.Configuration.GetConnectionString();
 
-        var connectionString = string.Format(builder.Configuration.GetConnectionString("DbConnectionString")!, username, password);
-
-        var envs = Environment.GetEnvironmentVariables();
-
-        Console.WriteLine("--envs--");
-        foreach (var env in envs)
-        {
-            Console.WriteLine($"env: {env}");
-        }
-        
-        Console.WriteLine($"Using PostgreSQL connection: {connectionString}");
-        
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(connectionString));
+            NpgsqlDbContextOptionsBuilderExtensions.UseNpgsql(options, connectionString));
+        
+        ConnectionString = connectionString;
     }
 
     private static async Task ConfigureSingleUseDb(WebApplicationBuilder builder)
@@ -79,11 +72,13 @@ public static class DatabaseProviderConfiguration
 
         await dbContainer.StartAsync();
 
-        var containerConnectionString = dbContainer.GetConnectionString();
-        containerConnectionString += "; Include Error Detail=True";
+        var connectionString = dbContainer.GetConnectionString();
+        connectionString += "; Include Error Detail=True";
 
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(containerConnectionString));
+            options.UseNpgsql(connectionString));
+
+        ConnectionString = connectionString;
 
 #if DEBUG
         Console.WriteLine("--------------------------------------------------------");

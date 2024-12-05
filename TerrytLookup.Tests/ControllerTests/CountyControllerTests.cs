@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TerrytLookup.Infrastructure.Models.Dto;
 using TerrytLookup.Infrastructure.Services.CountyService;
-using TerrytLookup.Infrastructure.Services.TownService;
 using TerrytLookup.WebAPI.Controllers;
 
 namespace TerrytLookup.Tests.ControllerTests;

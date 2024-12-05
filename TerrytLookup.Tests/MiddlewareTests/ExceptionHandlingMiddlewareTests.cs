@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TerrytLookup.Infrastructure.ExceptionHandling;
@@ -8,147 +9,164 @@ namespace TerrytLookup.Tests.MiddlewareTests;
 
 public class ExceptionHandlingMiddlewareTests
 {
+    private static readonly Mock<ILogger<ExceptionHandlingMiddleware>> MockLogger = new();
+    private static readonly DefaultHttpContext HttpContext = new();
+
+    public ExceptionHandlingMiddlewareTests()
+    {
+        var loggerFactoryMock = new Mock<ILoggerFactory>();
+
+        loggerFactoryMock.Setup(x => x.CreateLogger(It.IsAny<string>()))
+            .Returns(MockLogger.Object);
+
+        var serviceCollection = new ServiceCollection().AddSingleton(loggerFactoryMock.Object)
+            .BuildServiceProvider();
+
+        HttpContext.RequestServices = serviceCollection;
+    }
+
     [Test]
     public async Task ShouldReturnMappedProblemDetail_AgreementNotFoundException()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var expectedException = new CountyNotFoundException(1, 1);
-        var httpContext = new DefaultHttpContext();
+
         var problem = expectedException.GetProblemDetails(expectedException);
         var exceptionHandlingMiddleware =
-            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), mockLogger.Object);
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
-        await exceptionHandlingMiddleware.InvokeAsync(httpContext);
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(httpContext.Response.StatusCode, Is.EqualTo(problem.Status));
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(problem.Status));
     }
 
     [Test]
     public async Task ShouldReturnMappedProblemDetail_ClientNotFoundException()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var expectedException = new DatabaseNotEmptyException();
-        var httpContext = new DefaultHttpContext();
         var problem = expectedException.GetProblemDetails(expectedException);
         var exceptionHandlingMiddleware =
-            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), mockLogger.Object);
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
-        await exceptionHandlingMiddleware.InvokeAsync(httpContext);
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(httpContext.Response.StatusCode, Is.EqualTo(problem.Status));
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(problem.Status));
     }
 
     [Test]
     public async Task ShouldReturnMappedProblemDetail_EquipmentNotFoundException()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var expectedException = new InvalidFileContentTypeExtensionException("txt");
-        var httpContext = new DefaultHttpContext();
         var problem = expectedException.GetProblemDetails(expectedException);
         var exceptionHandlingMiddleware =
-            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), mockLogger.Object);
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
-        await exceptionHandlingMiddleware.InvokeAsync(httpContext);
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(httpContext.Response.StatusCode, Is.EqualTo(problem.Status));
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(problem.Status));
     }
 
     [Test]
     public async Task ShouldReturnMappedProblemDetail_PaymentNotFoundException()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var expectedException = new StreetNotFoundException(1, 1);
-        var httpContext = new DefaultHttpContext();
         var problem = expectedException.GetProblemDetails(expectedException);
         var exceptionHandlingMiddleware =
-            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), mockLogger.Object);
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
-        await exceptionHandlingMiddleware.InvokeAsync(httpContext);
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(httpContext.Response.StatusCode, Is.EqualTo(problem.Status));
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(problem.Status));
     }
 
     [Test]
     public async Task ShouldReturnMappedProblemDetail_UserNotFoundException()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var expectedException = new TerrytParsingException(new Exception());
-        var httpContext = new DefaultHttpContext();
         var problem = expectedException.GetProblemDetails(expectedException);
         var exceptionHandlingMiddleware =
-            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), mockLogger.Object);
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
-        await exceptionHandlingMiddleware.InvokeAsync(httpContext);
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(httpContext.Response.StatusCode, Is.EqualTo(problem.Status));
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(problem.Status));
     }
 
     [Test]
     public async Task ShouldReturnMappedProblemDetail_UserDoesNotHaveIdClaimException()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var expectedException = new TownNotFoundException(1);
-        var httpContext = new DefaultHttpContext();
         var problem = expectedException.GetProblemDetails(expectedException);
         var exceptionHandlingMiddleware =
-            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), mockLogger.Object);
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
-        await exceptionHandlingMiddleware.InvokeAsync(httpContext);
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(httpContext.Response.StatusCode, Is.EqualTo(problem.Status));
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(problem.Status));
     }
 
     [Test]
     public async Task ShouldReturnMappedProblemDetail_UserIdClaimInvalidException()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var expectedException = new VoivodeshipNotFoundException(1);
-        var httpContext = new DefaultHttpContext();
         var problem = expectedException.GetProblemDetails(expectedException);
         var exceptionHandlingMiddleware =
-            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), mockLogger.Object);
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
-        await exceptionHandlingMiddleware.InvokeAsync(httpContext);
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(httpContext.Response.StatusCode, Is.EqualTo(problem.Status));
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(problem.Status));
+    }
+
+    [Test]
+    public async Task ShouldReturnMappedProblemDetail_InvalidDatabaseConfigurationException()
+    {
+        // Arrange
+        var expectedException = new InvalidDatabaseConfigurationException("");
+        var problem = expectedException.GetProblemDetails(expectedException);
+        var exceptionHandlingMiddleware =
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
+
+        // Act
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
+
+        // Assert
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(problem.Status));
     }
 
     [Test]
     public async Task ShouldReturnStatus500WhenUnmappedException()
     {
         // Arrange
-        var mockLogger = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var expectedException = new Exception();
-        var httpContext = new DefaultHttpContext();
 
-        var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), mockLogger.Object);
+        var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
-        await exceptionHandlingMiddleware.InvokeAsync(httpContext);
+        await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(httpContext.Response.StatusCode,
+        Assert.That(HttpContext.Response.StatusCode,
             Is.EqualTo(StatusCodes.Status500InternalServerError));
     }
 }

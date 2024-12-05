@@ -9,7 +9,7 @@ public class VoivodeshipNotFoundException(int id) : Exception($"Voivodeship with
     {
         return new ProblemDetails
         {
-            Title = "Voivodeship not found",
+            Title = "Voivodeship not found.",
             Detail = exception.Message,
             Status = StatusCodes.Status404NotFound
         };

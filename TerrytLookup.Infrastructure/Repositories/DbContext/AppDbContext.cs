@@ -14,7 +14,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : Microsoft.En
     public DbSet<Street> Streets { get; init; }
 
     public DbSet<Town> Towns { get; init; }
-    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasPostgresExtension("unaccent");
+        
+        base.OnModelCreating(modelBuilder);
+    }
+
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         var entries = ChangeTracker.Entries<BaseEntity>()

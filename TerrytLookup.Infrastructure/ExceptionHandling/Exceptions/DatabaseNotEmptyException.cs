@@ -9,7 +9,7 @@ public class DatabaseNotEmptyException() : Exception("Unable to initialize regis
     {
         return new ProblemDetails
         {
-            Title = "Unable to initialize registers",
+            Title = "Unable to initialize registers.",
             Detail = exception.Message,
             Status = StatusCodes.Status409Conflict
         };
