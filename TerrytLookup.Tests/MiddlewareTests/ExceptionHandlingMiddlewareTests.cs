@@ -16,11 +16,9 @@ public class ExceptionHandlingMiddlewareTests
     {
         var loggerFactoryMock = new Mock<ILoggerFactory>();
 
-        loggerFactoryMock.Setup(x => x.CreateLogger(It.IsAny<string>()))
-            .Returns(MockLogger.Object);
+        loggerFactoryMock.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(MockLogger.Object);
 
-        var serviceCollection = new ServiceCollection().AddSingleton(loggerFactoryMock.Object)
-            .BuildServiceProvider();
+        var serviceCollection = new ServiceCollection().AddSingleton(loggerFactoryMock.Object).BuildServiceProvider();
 
         HttpContext.RequestServices = serviceCollection;
     }
@@ -160,13 +158,13 @@ public class ExceptionHandlingMiddlewareTests
         // Arrange
         var expectedException = new Exception();
 
-        var exceptionHandlingMiddleware = new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
+        var exceptionHandlingMiddleware =
+            new ExceptionHandlingMiddleware(_ => Task.FromException(expectedException), MockLogger.Object);
 
         // Act
         await exceptionHandlingMiddleware.InvokeAsync(HttpContext);
 
         // Assert
-        Assert.That(HttpContext.Response.StatusCode,
-            Is.EqualTo(StatusCodes.Status500InternalServerError));
+        Assert.That(HttpContext.Response.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
     }
 }

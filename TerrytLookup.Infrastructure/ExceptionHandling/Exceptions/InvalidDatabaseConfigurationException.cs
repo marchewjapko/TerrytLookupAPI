@@ -7,11 +7,11 @@ public class InvalidDatabaseConfigurationException(string error) : Exception(err
 {
     public ProblemDetails GetProblemDetails(Exception exception)
     {
-        return new ProblemDetails()
+        return new ProblemDetails
         {
             Title = "Invalid database configuration.",
             Detail = exception.Message,
-            Status = StatusCodes.Status500InternalServerError,
+            Status = StatusCodes.Status500InternalServerError
         };
     }
 }

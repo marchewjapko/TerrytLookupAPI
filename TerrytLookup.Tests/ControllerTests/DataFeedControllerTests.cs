@@ -15,18 +15,14 @@ namespace TerrytLookup.Tests.ControllerTests;
 public class DataFeedControllerTests
 {
     private static Mock<ITownService> _townService = new();
-    private static  Mock<IStreetService> _streetService = new();
-    private static  Mock<IVoivodeshipService> _voivodeshipService = new();
-    private static  Mock<ICountyService> _countyService = new();
-    private static  Mock<IFeedDataService> _feedDataService = new();
-    private static  Mock<ILogger<DataFeedController>> _logger = new();
+    private static Mock<IStreetService> _streetService = new();
+    private static Mock<IVoivodeshipService> _voivodeshipService = new();
+    private static Mock<ICountyService> _countyService = new();
+    private static Mock<IFeedDataService> _feedDataService = new();
+    private static Mock<ILogger<DataFeedController>> _logger = new();
 
-    private static DataFeedController _dataFeedController = new(_logger.Object,
-        _townService.Object,
-        _streetService.Object,
-        _voivodeshipService.Object,
-        _countyService.Object,
-        _feedDataService.Object);
+    private static DataFeedController _dataFeedController = new(_logger.Object, _townService.Object,
+        _streetService.Object, _voivodeshipService.Object, _countyService.Object, _feedDataService.Object);
 
     [SetUp]
     public void Setup()
@@ -37,14 +33,10 @@ public class DataFeedControllerTests
         _countyService = new Mock<ICountyService>();
         _feedDataService = new Mock<IFeedDataService>();
         _logger = new Mock<ILogger<DataFeedController>>();
-        _dataFeedController = new(_logger.Object,
-            _townService.Object,
-            _streetService.Object,
-            _voivodeshipService.Object,
-            _countyService.Object,
-            _feedDataService.Object);
+        _dataFeedController = new DataFeedController(_logger.Object, _townService.Object, _streetService.Object,
+            _voivodeshipService.Object, _countyService.Object, _feedDataService.Object);
     }
-    
+
     [Test]
     public async Task InitializeData_ShouldInitialize()
     {
@@ -53,29 +45,27 @@ public class DataFeedControllerTests
         var simcFile = new Mock<IFormFile>();
         var ulicFile = new Mock<IFormFile>();
 
-        tercFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        simcFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        ulicFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
+        tercFile.Setup(x => x.ContentType).Returns("text/csv");
+        simcFile.Setup(x => x.ContentType).Returns("text/csv");
+        ulicFile.Setup(x => x.ContentType).Returns("text/csv");
 
-        _townService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _streetService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _countyService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _voivodeshipService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
+        _townService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _streetService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _countyService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _voivodeshipService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
 
         // Act
-        var result = await _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object) as NoContentResult;
+        var result =
+            await _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object) as
+                NoContentResult;
 
         // Assert
-        _feedDataService.Verify(x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()), Times.Once);
+        _feedDataService.Verify(
+            x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()),
+            Times.Once);
 
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.StatusCode, Is.EqualTo(204));
         });
@@ -89,21 +79,20 @@ public class DataFeedControllerTests
         var simcFile = new Mock<IFormFile>();
         var ulicFile = new Mock<IFormFile>();
 
-        tercFile.Setup(x => x.ContentType)
-            .Returns("text/txt");
-        simcFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        ulicFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        
+        tercFile.Setup(x => x.ContentType).Returns("text/txt");
+        simcFile.Setup(x => x.ContentType).Returns("text/csv");
+        ulicFile.Setup(x => x.ContentType).Returns("text/csv");
+
         // Assert
-        var exception = Assert.ThrowsAsync<InvalidFileContentTypeExtensionException>(
-            () => _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
-        
-        _feedDataService.Verify(x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()), Times.Never);
+        var exception = Assert.ThrowsAsync<InvalidFileContentTypeExtensionException>(() =>
+            _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
+
+        _feedDataService.Verify(
+            x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()),
+            Times.Never);
         Assert.That(exception.Message, Is.EqualTo("Unable to read file with content type of 'text/txt'."));
     }
-    
+
     [Test]
     public void InitializeData_ShouldThrowDatabaseNotEmptyException_Towns()
     {
@@ -112,24 +101,22 @@ public class DataFeedControllerTests
         var simcFile = new Mock<IFormFile>();
         var ulicFile = new Mock<IFormFile>();
 
-        tercFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        simcFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        ulicFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
+        tercFile.Setup(x => x.ContentType).Returns("text/csv");
+        simcFile.Setup(x => x.ContentType).Returns("text/csv");
+        ulicFile.Setup(x => x.ContentType).Returns("text/csv");
 
-        _townService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(true);
+        _townService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(true);
 
         // Assert
-        var exception = Assert.ThrowsAsync<DatabaseNotEmptyException>(
-            () => _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
-        
-        _feedDataService.Verify(x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()), Times.Never);
+        var exception = Assert.ThrowsAsync<DatabaseNotEmptyException>(() =>
+            _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
+
+        _feedDataService.Verify(
+            x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()),
+            Times.Never);
         Assert.That(exception.Message, Is.EqualTo("Unable to initialize registers. The database must be empty."));
     }
-    
+
     [Test]
     public void InitializeData_ShouldThrowDatabaseNotEmptyException_Streets()
     {
@@ -137,27 +124,24 @@ public class DataFeedControllerTests
         var tercFile = new Mock<IFormFile>();
         var simcFile = new Mock<IFormFile>();
         var ulicFile = new Mock<IFormFile>();
-        
-        tercFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        simcFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        ulicFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
 
-        _townService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _streetService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(true);
+        tercFile.Setup(x => x.ContentType).Returns("text/csv");
+        simcFile.Setup(x => x.ContentType).Returns("text/csv");
+        ulicFile.Setup(x => x.ContentType).Returns("text/csv");
+
+        _townService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _streetService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(true);
 
         // Assert
-        var exception = Assert.ThrowsAsync<DatabaseNotEmptyException>(
-            () => _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
-        
-        _feedDataService.Verify(x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()), Times.Never);
+        var exception = Assert.ThrowsAsync<DatabaseNotEmptyException>(() =>
+            _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
+
+        _feedDataService.Verify(
+            x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()),
+            Times.Never);
         Assert.That(exception.Message, Is.EqualTo("Unable to initialize registers. The database must be empty."));
     }
-    
+
     [Test]
     public void InitializeData_ShouldThrowDatabaseNotEmptyException_Voivodeships()
     {
@@ -165,29 +149,25 @@ public class DataFeedControllerTests
         var tercFile = new Mock<IFormFile>();
         var simcFile = new Mock<IFormFile>();
         var ulicFile = new Mock<IFormFile>();
-        
-        tercFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        simcFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        ulicFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
 
-        _townService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _streetService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _voivodeshipService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(true);
+        tercFile.Setup(x => x.ContentType).Returns("text/csv");
+        simcFile.Setup(x => x.ContentType).Returns("text/csv");
+        ulicFile.Setup(x => x.ContentType).Returns("text/csv");
+
+        _townService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _streetService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _voivodeshipService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(true);
 
         // Assert
-        var exception = Assert.ThrowsAsync<DatabaseNotEmptyException>(
-            () => _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
-        
-        _feedDataService.Verify(x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()), Times.Never);
+        var exception = Assert.ThrowsAsync<DatabaseNotEmptyException>(() =>
+            _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
+
+        _feedDataService.Verify(
+            x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()),
+            Times.Never);
         Assert.That(exception.Message, Is.EqualTo("Unable to initialize registers. The database must be empty."));
     }
-    
+
     [Test]
     public void InitializeData_ShouldThrowDatabaseNotEmptyException_Counties()
     {
@@ -196,27 +176,22 @@ public class DataFeedControllerTests
         var simcFile = new Mock<IFormFile>();
         var ulicFile = new Mock<IFormFile>();
 
-        tercFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        simcFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
-        ulicFile.Setup(x => x.ContentType)
-            .Returns("text/csv");
+        tercFile.Setup(x => x.ContentType).Returns("text/csv");
+        simcFile.Setup(x => x.ContentType).Returns("text/csv");
+        ulicFile.Setup(x => x.ContentType).Returns("text/csv");
 
-        _townService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _streetService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _voivodeshipService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(false);
-        _countyService.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(true);
+        _townService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _streetService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _voivodeshipService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(false);
+        _countyService.Setup(x => x.ExistAnyAsync()).ReturnsAsync(true);
 
         // Assert
-        var exception = Assert.ThrowsAsync<DatabaseNotEmptyException>(
-            () => _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
-        
-        _feedDataService.Verify(x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()), Times.Never);
+        var exception = Assert.ThrowsAsync<DatabaseNotEmptyException>(() =>
+            _dataFeedController.InitializeData(tercFile.Object, simcFile.Object, ulicFile.Object));
+
+        _feedDataService.Verify(
+            x => x.FeedTerrytDataAsync(It.IsAny<IFormFile>(), It.IsAny<IFormFile>(), It.IsAny<IFormFile>()),
+            Times.Never);
         Assert.That(exception.Message, Is.EqualTo("Unable to initialize registers. The database must be empty."));
     }
 }

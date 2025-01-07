@@ -7,7 +7,6 @@ using Microsoft.OpenApi.Models;
 using TerrytLookup.Infrastructure.ExceptionHandling;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 using TerrytLookup.Infrastructure.Extensions;
-using TerrytLookup.Infrastructure.Models.Profiles;
 using TerrytLookup.Infrastructure.Repositories.DbContext;
 using TerrytLookup.Infrastructure.Services;
 
@@ -15,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen(options => {
                       <a href="https://eteryt.stat.gov.pl/eTeryt/rejestr_teryt/udostepnianie_danych/baza_teryt/uzytkownicy_indywidualni/pobieranie/pliki_pelne.aspx">https://eteryt.stat.gov.pl/eTeryt</a>
                       """
     });
-    
+
     options.OrderActionsBy(action => action.HttpMethod);
 
     options.IncludeXmlComments(Assembly.GetExecutingAssembly());
@@ -36,27 +36,25 @@ builder.Services.AddSwaggerGen(options => {
 
 await builder.ConfigureDatabaseProvider();
 
-builder.Services.RegisterProfiles();
 builder.Services.RegisterApiServices();
 
-builder.Services.AddProblemDetails(options => {
-    options.CustomizeProblemDetails = context => {
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
         context.ProblemDetails.Instance = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
-        
+
         context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
-        
+
         var activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
         context.ProblemDetails.Extensions.TryAdd("traceId", activity?.Id);
     };
 });
 
 if (DatabaseProviderConfiguration.ConnectionString is null)
-{
     throw new InvalidDatabaseConfigurationException("Database provider not initialized.");
-}
 
-builder.Services.AddHealthChecks()
-    .AddNpgSql(DatabaseProviderConfiguration.ConnectionString);
+builder.Services.AddHealthChecks().AddNpgSql(DatabaseProviderConfiguration.ConnectionString);
 
 var app = builder.Build();
 
@@ -77,7 +75,7 @@ var context = services.GetRequiredService<AppDbContext>();
 
 await context.Database.MigrateAsync();
 
-app.MapHealthChecks("/_health", new HealthCheckOptions()
+app.MapHealthChecks("/_health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });

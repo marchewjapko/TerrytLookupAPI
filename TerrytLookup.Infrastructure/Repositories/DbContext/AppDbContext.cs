@@ -18,14 +18,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : Microsoft.En
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("unaccent");
-        
+
         base.OnModelCreating(modelBuilder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
-        var entries = ChangeTracker.Entries<BaseEntity>()
-            .Where(e => e.State == EntityState.Modified);
+        var entries = ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Modified);
 
         foreach (var entry in entries) entry.Entity.UpdateTimestamp = DateTimeOffset.UtcNow;
 

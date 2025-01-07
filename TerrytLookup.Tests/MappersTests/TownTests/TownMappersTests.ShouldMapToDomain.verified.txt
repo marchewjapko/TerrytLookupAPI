@@ -1,0 +1,8 @@
+﻿{
+  Id: 918123,
+  Name: Warszawa,
+  CountyId: 65,
+  CountyVoivodeshipId: 14,
+  ValidFromDate: 2025-01-01,
+  CreateTimestamp: {Scrubbed}
+}

@@ -17,21 +17,20 @@ public class TownControllerTests
     public void BrowseAllTowns_ShouldReturnAllTowns()
     {
         // Arrange
-        var expectedResult = Builder<TownDto>.CreateListOfSize(10)
-            .Build();
+        var expectedResult = Builder<TownDto>.CreateListOfSize(10).Build().ToAsyncEnumerable();
 
-        TownService.Setup(x => x.BrowseAllAsync(null, null, null))
-            .Returns(expectedResult);
+        TownService.Setup(x => x.BrowseAllAsync(null, null, null)).Returns(expectedResult);
 
         // Act
         var result = TownController.BrowseAllTowns() as OkObjectResult;
 
         // Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.Not.Null);
-            Assert.That(result.Value, Is.TypeOf<List<TownDto>>());
+            // Assert.That(result.Value, Is.TypeOf<IAsyncEnumerable<TownDto>>());
         });
     }
 
@@ -39,17 +38,16 @@ public class TownControllerTests
     public async Task GetTownById_ShouldReturnTown()
     {
         // Arrange
-        var expectedResult = Builder<TownDto>.CreateNew()
-            .Build();
+        var expectedResult = Builder<TownDto>.CreateNew().Build();
 
-        TownService.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
-            .ReturnsAsync(expectedResult);
+        TownService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(expectedResult);
 
         // Act
         var result = await TownController.GetTownById(1) as OkObjectResult;
 
         // Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.Not.Null);

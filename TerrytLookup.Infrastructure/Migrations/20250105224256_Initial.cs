@@ -108,12 +108,6 @@ namespace TerrytLookup.Infrastructure.Migrations
                 column: "Name");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Counties_VoivodeshipId_CountyId",
-                table: "Counties",
-                columns: new[] { "VoivodeshipId", "CountyId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Streets_Name",
                 table: "Streets",
                 column: "Name");

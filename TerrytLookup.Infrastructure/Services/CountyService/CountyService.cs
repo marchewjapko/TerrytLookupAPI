@@ -1,39 +1,34 @@
-﻿using AutoMapper;
-using TerrytLookup.Core.Domain;
-using TerrytLookup.Core.Repositories;
+﻿using TerrytLookup.Core.Repositories;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 using TerrytLookup.Infrastructure.Models.Dto;
-using TerrytLookup.Infrastructure.Models.Dto.Internal.CreateDtos;
+using TerrytLookup.Infrastructure.Models.Dto.Terryt;
+using TerrytLookup.Infrastructure.Models.Mappers;
 
 namespace TerrytLookup.Infrastructure.Services.CountyService;
 
-public class CountyService(ICountyRepository countyRepository, IMapper mapper) : ICountyService
+public class CountyService(ICountyRepository countyRepository) : ICountyService
 {
-    public Task AddRange(IEnumerable<CreateCountyDto> counties)
+    public Task AddRange(IEnumerable<TercDto> counties)
     {
-        var entities = mapper.Map<IEnumerable<County>>(counties)
-            .ToList();
+        var entities = counties.Select(x => x.ToDomainCounty());
 
         return countyRepository.AddRangeAsync(entities);
     }
 
-    public IEnumerable<CountyDto> BrowseAllAsync(string? name = null, int? voivodeshipId = null)
+    public IAsyncEnumerable<CountyDto> BrowseAllAsync(string? name = null, int? voivodeshipId = null)
     {
         var towns = countyRepository.BrowseAllAsync(name, voivodeshipId);
 
-        return mapper.Map<IEnumerable<CountyDto>>(towns).OrderBy(x => x.Name);
+        return towns.Select(x => x.ToDto());
     }
 
     public async Task<CountyDto> GetByIdAsync(int voivodeshipId, int countyId)
     {
         var town = await countyRepository.GetByIdAsync(voivodeshipId, countyId);
 
-        if (town is null)
-        {
-            throw new CountyNotFoundException(voivodeshipId, countyId);
-        }
+        if (town is null) throw new CountyNotFoundException(voivodeshipId, countyId);
 
-        return mapper.Map<CountyDto>(town);
+        return town.ToDto();
     }
 
     public Task<bool> ExistAnyAsync()

@@ -2,7 +2,7 @@
 
 namespace TerrytLookup.Infrastructure.Models.Dto.Terryt;
 
-public sealed class SimcDto : IEquatable<SimcDto>
+public sealed class SimcDto
 {
     /// <summary>
     ///     Terryt property: <c>WOJ</c>
@@ -39,39 +39,4 @@ public sealed class SimcDto : IEquatable<SimcDto>
     /// </summary>
     [Name("STAN_NA")]
     public required DateOnly ValidFromDate { get; init; }
-
-    public bool Equals(SimcDto? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        return Id == other.Id;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        return obj is SimcDto dto && Equals(dto);
-    }
-
-    public override int GetHashCode()
-    {
-        return Id;
-    }
 }

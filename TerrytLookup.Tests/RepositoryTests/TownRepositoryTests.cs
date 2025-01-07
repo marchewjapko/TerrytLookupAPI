@@ -9,18 +9,15 @@ namespace TerrytLookup.Tests.RepositoryTests;
 [Parallelizable(ParallelScope.Self)]
 public class TownRepositoryTests
 {
-    private static readonly AppDbContext Context = TestContextSetup.SetupAsync()
-        .Result;
+    private static readonly AppDbContext Context = TestContextSetup.SetupAsync().Result;
 
     private static readonly TownRepository Repository = new(Context);
 
     [SetUp]
     public void Setup()
     {
-        Context.Voivodeships.Add(Builder<Voivodeship>.CreateNew()
-            .Build());
-        Context.Counties.Add(Builder<County>.CreateNew()
-            .Build());
+        Context.Voivodeships.Add(Builder<Voivodeship>.CreateNew().Build());
+        Context.Counties.Add(Builder<County>.CreateNew().Build());
         Context.SaveChanges();
 
         Assume.That(Context.Counties, Is.Not.Empty);
@@ -41,11 +38,8 @@ public class TownRepositoryTests
     public async Task AddRangeAsync_ShouldAddRange()
     {
         //Arrange
-        var towns = Builder<Town>.CreateListOfSize(10)
-            .All()
-            .With(x => x.CountyVoivodeshipId = 1)
-            .With(x => x.CountyId = 1)
-            .Build();
+        var towns = new Faker<Town>().RuleFor(x => x.Id, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.City())
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).RuleFor(x => x.CountyId, _ => 1).Generate(10);
 
         //Act
         await Repository.AddRangeAsync(towns);
@@ -58,11 +52,8 @@ public class TownRepositoryTests
     public async Task ExistAnyAsync_ShouldReturnTrue()
     {
         //Arrange
-        var towns = Builder<Town>.CreateListOfSize(10)
-            .All()
-            .With(x => x.CountyVoivodeshipId = 1)
-            .With(x => x.CountyId = 1)
-            .Build();
+        var towns = new Faker<Town>().RuleFor(x => x.Id, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.City())
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).RuleFor(x => x.CountyId, _ => 1).Generate(10);
 
         Context.AddRange(towns);
         await Context.SaveChangesAsync();
@@ -88,18 +79,14 @@ public class TownRepositoryTests
     public async Task BrowseAllAsync_ShouldReturnAll()
     {
         //Arrange
-        var towns = Builder<Town>.CreateListOfSize(10)
-            .All()
-            .With(x => x.CountyVoivodeshipId = 1)
-            .With(x => x.CountyId = 1)
-            .Build();
+        var towns = new Faker<Town>().RuleFor(x => x.Id, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.City())
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).RuleFor(x => x.CountyId, _ => 1).Generate(10);
 
         Context.AddRange(towns);
         await Context.SaveChangesAsync();
 
         //Act
-        var result = await Repository.BrowseAllAsync()
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync().ToListAsync();
 
         //Assert
         Assert.That(result, Has.Count.EqualTo(10));
@@ -111,28 +98,27 @@ public class TownRepositoryTests
         //Arrange
         const string townName = "ThisOne!";
 
-        var towns = Builder<Town>.CreateListOfSize(10)
-            .All()
-            .With(x => x.CountyVoivodeshipId = 1)
-            .With(x => x.CountyId = 1)
-            .TheFirst(1)
-            .With(x => x.Name = townName)
-            .TheRest()
-            .With(x => x.Name = "NotThisOne:/")
-            .Build();
+        var towns = new Faker<Town>().RuleFor(x => x.Id, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.City())
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).RuleFor(x => x.CountyId, _ => 1).Generate(10);
+
+        var validTown = new Faker<Town>().RuleFor(x => x.Id, _ => towns.Max(x => x.Id) + 1)
+            .RuleFor(x => x.Name, _ => townName).RuleFor(x => x.CountyId, _ => 1)
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).Generate();
+
+        towns.Add(validTown);
 
         Context.AddRange(towns);
         await Context.SaveChangesAsync();
 
         //Act
-        var result = await Repository.BrowseAllAsync(townName)
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync(townName).ToListAsync();
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result[0].Name, Is.EqualTo(townName));
-            Assert.That(result[0].Id, Is.EqualTo(towns[0].Id));
+            Assert.That(result[0].Id, Is.EqualTo(validTown.Id));
         });
     }
 
@@ -140,39 +126,36 @@ public class TownRepositoryTests
     public async Task BrowseAllAsync_ShouldFilterByVoivodeship()
     {
         //Arrange
-        var newVoivodeship = Builder<Voivodeship>.CreateNew()
-            .With(x => x.Id = 3)
-            .With(x => x.Name = new Faker().Random.Word())
-            .Build();
-        var newCounty = Builder<County>.CreateNew()
-            .With(x => x.VoivodeshipId = newVoivodeship.Id)
-            .With(x => x.CountyId = 1)
-            .With(x => x.Name = new Faker().Random.Word())
-            .Build();
+        var newVoivodeship = new Faker<Voivodeship>().RuleFor(x => x.Id, _ => 3)
+            .RuleFor(x => x.Name, f => f.Address.State()).Generate();
+
+        var newCounty = new Faker<County>().RuleFor(x => x.VoivodeshipId, _ => newVoivodeship.Id)
+            .RuleFor(x => x.CountyId, _ => 1).RuleFor(x => x.Name, f => f.Address.County()).Generate();
+
         Context.Voivodeships.Add(newVoivodeship);
         Context.Counties.Add(newCounty);
 
-        var towns = Builder<Town>.CreateListOfSize(10)
-            .All()
-            .With(x => x.CountyVoivodeshipId = 1)
-            .With(x => x.CountyId = 1)
-            .TheFirst(1)
-            .With(x => x.CountyVoivodeshipId = 3)
-            .With(x => x.CountyId = 1)
-            .Build();
+        var towns = new Faker<Town>().RuleFor(x => x.Id, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.City())
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).RuleFor(x => x.CountyId, _ => 1).Generate(10);
+
+        var validTown = new Faker<Town>().RuleFor(x => x.Id, _ => towns.Max(x => x.Id) + 1)
+            .RuleFor(x => x.Name, f => f.Address.City()).RuleFor(x => x.CountyId, _ => 1)
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 3).Generate();
+
+        towns.Add(validTown);
 
         Context.AddRange(towns);
         await Context.SaveChangesAsync();
 
         //Act
-        var result = await Repository.BrowseAllAsync(voivodeshipId: newVoivodeship.Id)
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync(voivodeshipId: newVoivodeship.Id).ToListAsync();
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Has.Count.EqualTo(1));
-            Assert.That(result[0].Name, Is.EqualTo(towns[0].Name));
-            Assert.That(result[0].Id, Is.EqualTo(towns[0].Id));
+            Assert.That(result[0].Name, Is.EqualTo(validTown.Name));
+            Assert.That(result[0].Id, Is.EqualTo(validTown.Id));
             Assert.That(result[0].CountyVoivodeshipId, Is.EqualTo(newVoivodeship.Id));
         });
     }
@@ -181,41 +164,45 @@ public class TownRepositoryTests
     public async Task BrowseAllAsync_ShouldFilterByCounty()
     {
         //Arrange
-        var newVoivodeship = Builder<Voivodeship>.CreateNew()
-            .With(x => x.Id = 3)
-            .With(x => x.Name = new Faker().Random.Word())
-            .Build();
-        var newCounties = Builder<County>.CreateListOfSize(3)
-            .All()
-            .With(x => x.VoivodeshipId = newVoivodeship.Id)
-            .With(x => x.Name = new Faker().Random.Word())
-            .Build();
+        const string selectedTownName = "ThisOne!";
+
+        var newVoivodeship = new Faker<Voivodeship>().RuleFor(x => x.Id, _ => 3)
+            .RuleFor(x => x.Name, f => f.Address.State()).Generate();
+
+        var newCounties = new Faker<County>().RuleFor(x => x.VoivodeshipId, _ => newVoivodeship.Id)
+            .RuleFor(x => x.CountyId, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.County()).Generate(3);
+
         Context.Voivodeships.Add(newVoivodeship);
         Context.Counties.AddRange(newCounties);
 
-        var towns = Builder<Town>.CreateListOfSize(10)
-            .All()
-            .With(x => x.CountyVoivodeshipId = 1)
-            .With(x => x.CountyId = 1)
-            .TheFirst(1)
-            .With(x => x.CountyVoivodeshipId = 3)
-            .With(x => x.CountyId = 1)
-            .Build();
+        var towns = new Faker<Town>().RuleFor(x => x.Id, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.City())
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).RuleFor(x => x.CountyId, _ => 1).Generate(10);
+
+        var moreInvalidTown = new Faker<Town>().RuleFor(x => x.Id, _ => towns.Max(x => x.Id) + 1)
+            .RuleFor(x => x.Name, f => f.Address.City()).RuleFor(x => x.CountyVoivodeshipId, _ => 1)
+            .RuleFor(x => x.CountyId, _ => 1).Generate();
+
+        var validTown = new Faker<Town>().RuleFor(x => x.Id, _ => moreInvalidTown.Id + 1)
+            .RuleFor(x => x.Name, _ => selectedTownName).RuleFor(x => x.CountyId, _ => 1)
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 3).Generate();
+
+        towns.AddRange(moreInvalidTown, validTown);
 
         Context.AddRange(towns);
         await Context.SaveChangesAsync();
 
         //Act
-        var result = await Repository.BrowseAllAsync(voivodeshipId: newVoivodeship.Id, countyId: newCounties[0].CountyId)
+        var result = await Repository.BrowseAllAsync(voivodeshipId: newVoivodeship.Id, countyId: validTown.CountyId)
             .ToListAsync();
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Has.Count.EqualTo(1));
-            Assert.That(result[0].Name, Is.EqualTo(towns[0].Name));
-            Assert.That(result[0].Id, Is.EqualTo(towns[0].Id));
+            Assert.That(result[0].Name, Is.EqualTo(selectedTownName));
+            Assert.That(result[0].Id, Is.EqualTo(validTown.Id));
             Assert.That(result[0].CountyVoivodeshipId, Is.EqualTo(newVoivodeship.Id));
-            Assert.That(result[0].CountyId, Is.EqualTo(newCounties[0].CountyId));
+            Assert.That(result[0].CountyId, Is.EqualTo(validTown.CountyId));
         });
     }
 
@@ -223,11 +210,8 @@ public class TownRepositoryTests
     public async Task GetByIdAsync_ShouldReturnTown()
     {
         //Arrange
-        var towns = Builder<Town>.CreateListOfSize(10)
-            .All()
-            .With(x => x.CountyVoivodeshipId = 1)
-            .With(x => x.CountyId = 1)
-            .Build();
+        var towns = new Faker<Town>().RuleFor(x => x.Id, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.City())
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).RuleFor(x => x.CountyId, _ => 1).Generate(10);
 
         Context.AddRange(towns);
         await Context.SaveChangesAsync();
@@ -236,7 +220,8 @@ public class TownRepositoryTests
         var result = await Repository.GetByIdAsync(towns[0].Id);
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.Id, Is.EqualTo(towns[0].Id));
         });

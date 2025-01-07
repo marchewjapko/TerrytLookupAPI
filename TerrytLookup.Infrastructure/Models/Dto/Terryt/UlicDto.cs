@@ -5,30 +5,6 @@ namespace TerrytLookup.Infrastructure.Models.Dto.Terryt;
 public sealed class UlicDto
 {
     /// <summary>
-    ///     Terryt property: <c>WOJ</c>
-    /// </summary>
-    [Name("WOJ")]
-    public required int VoivodeshipId { get; init; }
-
-    /// <summary>
-    ///     Terryt property: <c>POW</c>
-    /// </summary>
-    [Name("POW")]
-    public required int CountyId { get; init; }
-
-    /// <summary>
-    ///     Terryt property: <c>GMI</c>
-    /// </summary>
-    [Name("GMI")]
-    public required int MunicipalityId { get; init; }
-
-    /// <summary>
-    ///     Terryt property: <c>RODZ_GMI</c>
-    /// </summary>
-    [Name("RODZ_GMI")]
-    public required int EntityTypeId { get; init; }
-
-    /// <summary>
     ///     Terryt property: <c>SYM</c>
     /// </summary>
     [Name("SYM")]

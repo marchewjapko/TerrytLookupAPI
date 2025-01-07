@@ -29,3 +29,4 @@
 /TerrytData/*
 CoverageReport/*
 TerrytLookupAPI.sln.DotSettings.user
+*.received.*

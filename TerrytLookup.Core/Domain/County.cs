@@ -1,19 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace TerrytLookup.Core.Domain;
 
 [Index(nameof(Name))]
-[Index(nameof(VoivodeshipId), nameof(CountyId), IsUnique = true)]
 [PrimaryKey(nameof(VoivodeshipId), nameof(CountyId))]
+[UsedImplicitly]
 public class County : BaseEntity
 {
-    public int VoivodeshipId { get; set; }
+    public int VoivodeshipId { get; init; }
 
-    public int CountyId { get; set; }
+    public int CountyId { get; init; }
 
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
-    public required Voivodeship Voivodeship { get; set; }
+    [Required] public virtual Voivodeship Voivodeship { get; init; } = null!;
 
-    public required ICollection<Town> Towns { get; set; }
+    public virtual ICollection<Town> Towns { get; init; } = new List<Town>();
 }

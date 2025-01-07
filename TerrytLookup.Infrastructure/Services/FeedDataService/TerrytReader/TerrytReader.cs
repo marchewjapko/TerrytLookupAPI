@@ -25,17 +25,17 @@ public sealed class TerrytReader : ITerrytReader
     ///     This method retrieves records asynchronously and disposes of the resources
     ///     once the operation is complete.
     /// </remarks>
-    public Task<HashSet<T>> ReadAsync<T>(IFormFile terrytCsvFile)
+    public Task<List<T>> ReadAsync<T>(IFormFile terrytCsvFile)
     {
         var streamReader = new StreamReader(terrytCsvFile.OpenReadStream());
         var csvReader = new CsvReader(streamReader, CsvConfig);
 
         var records = csvReader.GetRecordsAsync<T>();
 
-        var result = records.ToHashSetAsync()
-            .AsTask();
+        var result = records.ToListAsync().AsTask();
 
-        result.ContinueWith(_ => {
+        result.ContinueWith(_ =>
+        {
             streamReader.Dispose();
             csvReader.Dispose();
         });

@@ -39,7 +39,7 @@ public class CountyController(ICountyService countyService) : ControllerBase
     public async Task<IActionResult> GetCountyById(int voivodeshipId, int countyId)
     {
         var result = await countyService.GetByIdAsync(voivodeshipId, countyId);
-        
+
         return Ok(result);
     }
 }

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 
-public class DatabaseNotEmptyException() : Exception("Unable to initialize registers. The database must be empty."), ICustomMappedException
+public class DatabaseNotEmptyException() : Exception("Unable to initialize registers. The database must be empty."),
+    ICustomMappedException
 {
     public ProblemDetails GetProblemDetails(Exception exception)
     {

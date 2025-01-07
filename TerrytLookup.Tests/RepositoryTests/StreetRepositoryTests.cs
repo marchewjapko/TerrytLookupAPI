@@ -1,4 +1,5 @@
-﻿using FizzWare.NBuilder;
+﻿using Bogus;
+using FizzWare.NBuilder;
 using TerrytLookup.Core.Domain;
 using TerrytLookup.Infrastructure.Repositories;
 using TerrytLookup.Infrastructure.Repositories.DbContext;
@@ -8,20 +9,16 @@ namespace TerrytLookup.Tests.RepositoryTests;
 [Parallelizable(ParallelScope.Self)]
 public class StreetRepositoryTests
 {
-    private static readonly AppDbContext Context = TestContextSetup.SetupAsync()
-        .Result;
+    private static readonly AppDbContext Context = TestContextSetup.SetupAsync().Result;
 
     private static readonly StreetRepository Repository = new(Context);
 
     [SetUp]
     public void Setup()
     {
-        Context.Voivodeships.Add(Builder<Voivodeship>.CreateNew()
-            .Build());
-        Context.Counties.Add(Builder<County>.CreateNew()
-            .Build());
-        Context.Towns.Add(Builder<Town>.CreateNew()
-            .Build());
+        Context.Voivodeships.Add(Builder<Voivodeship>.CreateNew().Build());
+        Context.Counties.Add(Builder<County>.CreateNew().Build());
+        Context.Towns.Add(Builder<Town>.CreateNew().Build());
         Context.SaveChanges();
 
         Assume.That(Context.Counties, Is.Not.Empty);
@@ -44,10 +41,8 @@ public class StreetRepositoryTests
     public async Task AddRangeAsync_ShouldAddRange()
     {
         //Arrange
-        var streets = Builder<Street>.CreateListOfSize(10)
-            .All()
-            .With(x => x.TownId = 1)
-            .Build();
+        var streets = new Faker<Street>().RuleFor(x => x.Name, f => f.Address.StreetName())
+            .RuleFor(x => x.NameId, f => f.IndexFaker).RuleFor(x => x.TownId, _ => 1).Generate(10);
 
         //Act
         await Repository.AddRangeAsync(streets);
@@ -60,13 +55,11 @@ public class StreetRepositoryTests
     public async Task ExistAnyAsync_ShouldReturnTrue()
     {
         //Arrange
-        var streets = Builder<Street>.CreateListOfSize(10)
-            .All()
-            .With(x => x.TownId = 1)
-            .Build();
+        var streets = new Faker<Street>().RuleFor(x => x.Name, f => f.Address.StreetName())
+            .RuleFor(x => x.NameId, f => f.IndexFaker).RuleFor(x => x.TownId, _ => 1).Generate(10);
 
         Context.AddRange(streets);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         Assume.That(Context.Streets, Is.Not.Empty);
 
@@ -91,17 +84,14 @@ public class StreetRepositoryTests
     public async Task BrowseAllAsync_ShouldReturnAllStreets()
     {
         //Arrange
-        var streets = Builder<Street>.CreateListOfSize(10)
-            .All()
-            .With(x => x.TownId = 1)
-            .Build();
+        var streets = new Faker<Street>().RuleFor(x => x.Name, f => f.Address.StreetName())
+            .RuleFor(x => x.NameId, f => f.IndexFaker).RuleFor(x => x.TownId, _ => 1).Generate(10);
 
         Context.AddRange(streets);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         //Act
-        var result = await Repository.BrowseAllAsync()
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync().ToListAsync();
 
         //Assert
         Assert.That(result, Has.Count.EqualTo(10));
@@ -113,28 +103,30 @@ public class StreetRepositoryTests
         //Arrange
         const string streetName = "ThisOne!";
 
-        var streets = Builder<Street>.CreateListOfSize(10)
-            .All()
-            .With(x => x.TownId = 1)
-            .TheFirst(1)
-            .With(x => x.Name = streetName)
-            .TheRest()
-            .With(x => x.Name = "NotThisOne:/")
-            .Build();
+        var streets = new Faker<Street>().RuleFor(x => x.Name, f => f.Address.StreetName())
+            .RuleFor(x => x.NameId, f => f.IndexFaker).RuleFor(x => x.TownId, _ => 1)
+            .RuleFor(x => x.Name, f => f.Address.StreetName()).Generate(10);
+
+        streets.Add(new Street
+        {
+            TownId = 1,
+            Name = streetName,
+            NameId = streets.Max(x => x.NameId) + 1
+        });
 
         Context.AddRange(streets);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         //Act
-        var result = await Repository.BrowseAllAsync(streetName)
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync(streetName).ToListAsync();
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result[0].Name, Is.EqualTo(streetName));
-            Assert.That(result[0].TownId, Is.EqualTo(streets[0].TownId));
-            Assert.That(result[0].NameId, Is.EqualTo(streets[0].NameId));
+            Assert.That(result[0].TownId, Is.EqualTo(streets[^1].TownId));
+            Assert.That(result[0].NameId, Is.EqualTo(streets[^1].NameId));
         });
     }
 
@@ -142,29 +134,29 @@ public class StreetRepositoryTests
     public async Task BrowseAllAsync_ShouldFilterByTownId()
     {
         //Arrange
-        var newTown = Builder<Town>.CreateNew()
-            .With(x => x.CountyVoivodeshipId = 1)
-            .With(x => x.CountyId = 1)
-            .With(x => x.Id = 3)
-            .Build();
+        var newTown = new Faker<Town>().RuleFor(x => x.Name, f => f.Address.City())
+            .RuleFor(x => x.CountyVoivodeshipId, _ => 1).RuleFor(x => x.CountyId, _ => 1).Generate();
+
         Context.Towns.Add(newTown);
 
-        var streets = Builder<Street>.CreateListOfSize(10)
-            .All()
-            .With(x => x.TownId = 1)
-            .TheFirst(7)
-            .With(x => x.TownId = newTown.Id)
-            .Build();
+        var streets = new Faker<Street>().RuleFor(x => x.Name, f => f.Address.StreetName())
+            .RuleFor(x => x.NameId, f => f.IndexFaker).RuleFor(x => x.TownId, _ => 1).Generate(3);
+
+        var validStreets = new Faker<Street>().RuleFor(x => x.Name, f => f.Address.StreetName())
+            .RuleFor(x => x.NameId, f => streets.Max(x => x.NameId) + f.IndexFaker)
+            .RuleFor(x => x.TownId, _ => newTown.Id).Generate(7);
+
+        streets.AddRange(validStreets);
 
         Context.AddRange(streets);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         //Act
-        var result = await Repository.BrowseAllAsync(townId: newTown.Id)
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync(townId: newTown.Id).ToListAsync();
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Has.Count.EqualTo(7));
             Assert.That(result.All(x => x.TownId == newTown.Id), Is.True);
         });
@@ -174,19 +166,18 @@ public class StreetRepositoryTests
     public async Task GetByIdAsync_ShouldReturnStreet()
     {
         //Arrange
-        var streets = Builder<Street>.CreateListOfSize(10)
-            .All()
-            .With(x => x.TownId = 1)
-            .Build();
+        var streets = new Faker<Street>().RuleFor(x => x.Name, f => f.Address.StreetName())
+            .RuleFor(x => x.NameId, f => f.IndexFaker).RuleFor(x => x.TownId, _ => 1).Generate(10);
 
         Context.AddRange(streets);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         //Act
         var result = await Repository.GetByIdAsync(streets[0].TownId, streets[0].NameId);
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.TownId, Is.EqualTo(streets[0].TownId));
             Assert.That(result.NameId, Is.EqualTo(streets[0].NameId));

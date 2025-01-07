@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 
-public class VoivodeshipNotFoundException(int id) : Exception($"Voivodeship with id {id} not found."), ICustomMappedException
+public class VoivodeshipNotFoundException(int id)
+    : Exception($"Voivodeship with id {id} not found."), ICustomMappedException
 {
     public ProblemDetails GetProblemDetails(Exception exception)
     {

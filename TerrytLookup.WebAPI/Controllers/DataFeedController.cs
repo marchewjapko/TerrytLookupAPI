@@ -37,36 +37,21 @@ public class DataFeedController(
     [Consumes("multipart/form-data")]
     [Produces("application/json")]
     [HttpPost]
-    public async Task<IActionResult> InitializeData([Required] IFormFile tercCsvFile,
-        [Required] IFormFile simcCsvFile,
+    public async Task<IActionResult> InitializeData([Required] IFormFile tercCsvFile, [Required] IFormFile simcCsvFile,
         [Required] IFormFile ulicCsvFile)
     {
         IFormFile[] files = [tercCsvFile, simcCsvFile, ulicCsvFile];
         foreach (var contentType in files.Select(x => x.ContentType))
             if (contentType != "text/csv")
-            {
                 throw new InvalidFileContentTypeExtensionException(contentType);
-            }
 
-        if (await townService.ExistAnyAsync())
-        {
-            throw new DatabaseNotEmptyException();
-        }
-        
-        if (await streetService.ExistAnyAsync())
-        {
-            throw new DatabaseNotEmptyException();
-        }
-        
-        if (await voivodeshipService.ExistAnyAsync())
-        {
-            throw new DatabaseNotEmptyException();
-        }   
-        
-        if (await countyService.ExistAnyAsync())
-        {
-            throw new DatabaseNotEmptyException();
-        }
+        if (await townService.ExistAnyAsync()) throw new DatabaseNotEmptyException();
+
+        if (await streetService.ExistAnyAsync()) throw new DatabaseNotEmptyException();
+
+        if (await voivodeshipService.ExistAnyAsync()) throw new DatabaseNotEmptyException();
+
+        if (await countyService.ExistAnyAsync()) throw new DatabaseNotEmptyException();
 
         await feedDataService.FeedTerrytDataAsync(tercCsvFile, simcCsvFile, ulicCsvFile);
 

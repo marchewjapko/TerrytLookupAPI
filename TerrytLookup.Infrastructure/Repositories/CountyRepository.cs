@@ -8,36 +8,27 @@ namespace TerrytLookup.Infrastructure.Repositories;
 
 public class CountyRepository(AppDbContext context) : ICountyRepository
 {
-    public Task AddRangeAsync(IList<County> counties)
+    public Task AddRangeAsync(IEnumerable<County> counties)
     {
         return context.BulkInsertAsync(counties);
     }
 
     public IAsyncEnumerable<County> BrowseAllAsync(string? name = null, int? voivodeshipId = null)
     {
-        var query = context.Counties.AsNoTracking()
-            .AsQueryable();
+        var query = context.Counties.AsNoTracking().AsQueryable();
 
         if (name is not null)
-        {
-            query = query.Where(x => EF.Functions.ILike(EF.Functions.Unaccent(x.Name), EF.Functions.Unaccent($"%{name}%")));
-        }
+            query = query.Where(x =>
+                EF.Functions.ILike(EF.Functions.Unaccent(x.Name), EF.Functions.Unaccent($"%{name}%")));
 
-        if (voivodeshipId is not null)
-        {
-            query = query.Where(x => x.Voivodeship.Id == voivodeshipId);
-        }
+        if (voivodeshipId is not null) query = query.Where(x => x.Voivodeship.Id == voivodeshipId);
 
-        return query
-            .Take(AppDbContext.PageSize)
-            .Include(x => x.Voivodeship)
-            .AsAsyncEnumerable();
+        return query.OrderBy(x => x.Name).Take(AppDbContext.PageSize).AsAsyncEnumerable();
     }
 
     public Task<County?> GetByIdAsync(int voivodeshipId, int countyId)
     {
-        return context.Counties.Include(x => x.Voivodeship)
-            .FirstOrDefaultAsync(x => x.VoivodeshipId == voivodeshipId && x.CountyId == countyId);
+        return context.Counties.FirstOrDefaultAsync(x => x.VoivodeshipId == voivodeshipId && x.CountyId == countyId);
     }
 
     public Task<bool> ExistAnyAsync()

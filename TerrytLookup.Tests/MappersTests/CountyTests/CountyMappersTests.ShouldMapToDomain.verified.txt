@@ -1,0 +1,7 @@
+﻿{
+  VoivodeshipId: 14,
+  CountyId: 65,
+  Name: Warszawa,
+  ValidFromDate: 2025-01-01,
+  CreateTimestamp: {Scrubbed}
+}

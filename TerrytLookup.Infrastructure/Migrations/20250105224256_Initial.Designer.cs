@@ -12,7 +12,7 @@ using TerrytLookup.Infrastructure.Repositories.DbContext;
 namespace TerrytLookup.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241204203138_Initial")]
+    [Migration("20250105224256_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -50,9 +50,6 @@ namespace TerrytLookup.Infrastructure.Migrations
                     b.HasKey("VoivodeshipId", "CountyId");
 
                     b.HasIndex("Name");
-
-                    b.HasIndex("VoivodeshipId", "CountyId")
-                        .IsUnique();
 
                     b.ToTable("Counties");
                 });

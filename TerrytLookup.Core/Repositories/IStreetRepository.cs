@@ -4,7 +4,7 @@ namespace TerrytLookup.Core.Repositories;
 
 public interface IStreetRepository
 {
-    Task AddRangeAsync(IList<Street> towns);
+    Task AddRangeAsync(IEnumerable<Street> towns);
 
     IAsyncEnumerable<Street> BrowseAllAsync(string? name = null, int? townId = null);
 

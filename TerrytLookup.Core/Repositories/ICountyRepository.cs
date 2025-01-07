@@ -4,7 +4,7 @@ namespace TerrytLookup.Core.Repositories;
 
 public interface ICountyRepository
 {
-    Task AddRangeAsync(IList<County> counties);
+    Task AddRangeAsync(IEnumerable<County> counties);
 
     IAsyncEnumerable<County> BrowseAllAsync(string? name = null, int? voivodeshipId = null);
 

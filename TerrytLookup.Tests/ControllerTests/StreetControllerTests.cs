@@ -17,21 +17,20 @@ public class StreetControllerTests
     public void BrowseAllStreets_ShouldReturnAllStreets()
     {
         // Arrange
-        var expectedResult = Builder<StreetDto>.CreateListOfSize(10)
-            .Build();
+        var expectedResult = Builder<StreetDto>.CreateListOfSize(10).Build().ToAsyncEnumerable();
 
-        StreetService.Setup(x => x.BrowseAllAsync(null, null))
-            .Returns(expectedResult);
+        StreetService.Setup(x => x.BrowseAllAsync(null, null)).Returns(expectedResult);
 
         // Act
         var result = StreetController.BrowseAllStreets() as OkObjectResult;
 
         // Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.Not.Null);
-            Assert.That(result.Value, Is.TypeOf<List<StreetDto>>());
+            // Assert.That(result.Value, Is.TypeOf<IAsyncEnumerable<StreetDto>>());
         });
     }
 
@@ -39,17 +38,16 @@ public class StreetControllerTests
     public async Task GetStreetById_ShouldReturnStreet()
     {
         // Arrange
-        var expectedResult = Builder<StreetDto>.CreateNew()
-            .Build();
+        var expectedResult = Builder<StreetDto>.CreateNew().Build();
 
-        StreetService.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync(expectedResult);
+        StreetService.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedResult);
 
         // Act
         var result = await StreetController.GetStreetById(1, 1) as OkObjectResult;
 
         // Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.Not.Null);

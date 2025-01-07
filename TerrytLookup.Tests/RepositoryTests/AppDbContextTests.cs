@@ -8,15 +8,13 @@ namespace TerrytLookup.Tests.RepositoryTests;
 [Parallelizable(ParallelScope.Self)]
 public class AppDbContextTests
 {
-    private static readonly AppDbContext Context = TestContextSetup.SetupAsync()
-        .Result;
+    private static readonly AppDbContext Context = TestContextSetup.SetupAsync().Result;
 
     [Test]
     public async Task SaveChanges_ShouldImplicitSetUpdateTs()
     {
         //Arrange
-        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10)
-            .Build();
+        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10).Build();
 
         Context.AddRange(voivodeships);
         await Context.SaveChangesAsync();
@@ -25,8 +23,7 @@ public class AppDbContextTests
         Assume.That(Context.Voivodeships.All(x => x.UpdateTimestamp == null), Is.True);
 
         //Act
-        var voivodeshipsToUpdate = Context.Voivodeships.AsTracking()
-            .ToList();
+        var voivodeshipsToUpdate = Context.Voivodeships.AsTracking().ToList();
 
         foreach (var voivodeship in voivodeshipsToUpdate.Take(4)) voivodeship.Name += "Updated";
 

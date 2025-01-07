@@ -1,0 +1,7 @@
+﻿{
+  NameId: 21435,
+  Name: ul. Wita Stwosza,
+  TownId: 918130,
+  ValidFromDate: 2025-01-01,
+  CreateTimestamp: {Scrubbed}
+}

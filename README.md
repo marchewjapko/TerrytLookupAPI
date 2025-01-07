@@ -1,14 +1,19 @@
 # TerrytLookup API
 
-TerrytLookupAPI is a RESTful web api made to query [Terryt Registry](https://eteryt.stat.gov.pl/eTeryt/english.aspx?contrast=default). The registry contains information regarding territorial divisions of Poland. <br/>
-The purpose of the API is to allow other systems to use address data that is compliant with Terryt. This way they can avoid pitfalls of string-based and user inputted address information.
+TerrytLookupAPI is a RESTful web api made to
+query [Terryt Registry](https://eteryt.stat.gov.pl/eTeryt/english.aspx?contrast=default). The registry contains
+information regarding territorial divisions of Poland. <br/>
+The purpose of the API is to allow other systems to use address data that is compliant with Terryt. This way they can
+avoid pitfalls of string-based and user inputted address information.
 
 # Status
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=coverage)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI) <br/> <br/>
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI) <br/> <br/>
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=marchewjapko_TerrytLookupAPI&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=marchewjapko_TerrytLookupAPI)
+
 # Components
 
 - WebAPI
@@ -23,9 +28,10 @@ The purpose of the API is to allow other systems to use address data that is com
     - [EFCore.BulkExtensions](https://www.nuget.org/packages/EFCore.BulkExtensions)
 - [CsvHelper](https://www.nuget.org/packages/CsvHelper)
 - [NUnit](https://www.nuget.org/packages/NUnit)
-- [Testcontainers](https://www.nuget.org/packages/Testcontainers) - an excellent solution for unit tests! <sub>bye bye in-memory</sub>
+- [Testcontainers](https://www.nuget.org/packages/Testcontainers) - an excellent solution for unit tests! <sub>bye bye
+  in-memory</sub>
 
-The entire system is contained in docker containers for easy deployment. 
+The entire system is contained in docker containers for easy deployment.
 
 # Docker
 
@@ -35,7 +41,7 @@ To build the image:
 
 To publish the image:
 
-    docker push marchewjapko/terryt-lookup-api_web-api:latest
+    docker push marchewjapko/terryt-lookup-api-web-api:latest
 
 To run compose:
 
@@ -43,4 +49,5 @@ To run compose:
 
 # Important considerations
 
-Terryt registry has an odd data scheme. E.g.: counties do not have any single unique identifier, thusly the system relies on composite keys for some entities 
+Terryt registry has an odd data scheme. E.g.: counties do not have any single unique identifier, thusly the system
+relies on composite keys for some entities 

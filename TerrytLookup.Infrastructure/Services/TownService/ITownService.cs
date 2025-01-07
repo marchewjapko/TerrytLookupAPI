@@ -1,13 +1,14 @@
 ﻿using TerrytLookup.Infrastructure.Models.Dto;
-using TerrytLookup.Infrastructure.Models.Dto.Internal.CreateDtos;
+using TerrytLookup.Infrastructure.Models.Dto.Terryt;
 
 namespace TerrytLookup.Infrastructure.Services.TownService;
 
 public interface ITownService
 {
-    public Task AddRange(IEnumerable<CreateTownDto> towns);
+    public Task AddRange(IEnumerable<SimcDto> towns);
 
-    public IEnumerable<TownDto> BrowseAllAsync(string? name = null, int? voivodeshipId = null, int? countyId = null);
+    public IAsyncEnumerable<TownDto> BrowseAllAsync(string? name = null, int? voivodeshipId = null,
+        int? countyId = null);
 
     public Task<TownDto> GetByIdAsync(int id);
 

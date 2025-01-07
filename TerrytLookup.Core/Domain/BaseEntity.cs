@@ -1,10 +1,12 @@
-﻿namespace TerrytLookup.Core.Domain;
+﻿using JetBrains.Annotations;
+
+namespace TerrytLookup.Core.Domain;
 
 public class BaseEntity
 {
-    public DateOnly ValidFromDate { get; set; }
-    
-    public DateTimeOffset CreateTimestamp { get; set; } = DateTimeOffset.UtcNow;
-    
+    [UsedImplicitly] public DateOnly ValidFromDate { get; init; }
+
+    public DateTimeOffset CreateTimestamp { get; init; } = DateTimeOffset.UtcNow;
+
     public DateTimeOffset? UpdateTimestamp { get; set; }
 }

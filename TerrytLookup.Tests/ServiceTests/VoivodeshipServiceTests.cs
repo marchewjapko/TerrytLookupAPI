@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using FizzWare.NBuilder;
+﻿using FizzWare.NBuilder;
 using Moq;
 using TerrytLookup.Core.Domain;
 using TerrytLookup.Core.Repositories;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
-using TerrytLookup.Infrastructure.Models.Dto;
-using TerrytLookup.Infrastructure.Models.Dto.Internal.CreateDtos;
+using TerrytLookup.Infrastructure.Models.Dto.Terryt;
 using TerrytLookup.Infrastructure.Services.VoivodeshipService;
 
 namespace TerrytLookup.Tests.ServiceTests;
@@ -14,87 +12,63 @@ namespace TerrytLookup.Tests.ServiceTests;
 public class VoivodeshipServiceTests
 {
     private static readonly Mock<IVoivodeshipRepository> VoivodeshipRepository = new();
-    private static readonly Mock<IMapper> Mapper = new();
-    private static readonly VoivodeshipService VoivodeshipService = new(VoivodeshipRepository.Object, Mapper.Object);
+    private static readonly VoivodeshipService VoivodeshipService = new(VoivodeshipRepository.Object);
 
     [Test]
     public async Task AddRange_ShouldAddRange()
     {
         //Arrange
-        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10)
-            .Build();
-        var voivodeshipsDto = Builder<CreateVoivodeshipDto>.CreateListOfSize(10)
-            .Build();
-
-        Mapper.Setup(x => x.Map<IEnumerable<Voivodeship>>(It.IsAny<IEnumerable<CreateVoivodeshipDto>>()))
-            .Returns(voivodeships);
+        var tercDtos = Builder<TercDto>.CreateListOfSize(10).Build();
 
         //Act
-        await VoivodeshipService.AddRange(voivodeshipsDto);
+        await VoivodeshipService.AddRange(tercDtos);
 
         //Assert
-        VoivodeshipRepository.Verify(x => x.AddRangeAsync(voivodeships), Times.Once);
+        VoivodeshipRepository.Verify(x => x.AddRangeAsync(It.IsAny<IEnumerable<Voivodeship>>()), Times.Once);
     }
 
     [Test]
-    public void BrowseAllAsync_ShouldReturnAllVoivodeships()
+    public async Task BrowseAllAsync_ShouldReturnAllVoivodeships()
     {
         //Arrange
-        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10)
-            .Build()
-            .ToAsyncEnumerable();
+        const int voivodeshipSize = 10;
 
-        var voivodeshipsDto = Builder<VoivodeshipDto>.CreateListOfSize(10)
-            .Build();
+        var voivodeships = Builder<Voivodeship>.CreateListOfSize(voivodeshipSize).Build().ToAsyncEnumerable();
 
-        Mapper.Setup(x => x.Map<IEnumerable<VoivodeshipDto>>(It.IsAny<IAsyncEnumerable<Voivodeship>>()))
-            .Returns(voivodeshipsDto);
-
-        VoivodeshipRepository.Setup(x => x.BrowseAllAsync())
-            .Returns(voivodeships);
+        VoivodeshipRepository.Setup(x => x.BrowseAllAsync()).Returns(voivodeships);
 
         //Act
-        var result = VoivodeshipService.BrowseAllAsync();
+        var result = await VoivodeshipService.BrowseAllAsync().ToListAsync();
 
         //Assert
         VoivodeshipRepository.Verify(x => x.BrowseAllAsync(), Times.Once);
-        Assert.That(result, Is.EquivalentTo(voivodeshipsDto));
+        Assert.That(result, Has.Count.EqualTo(voivodeshipSize));
     }
 
     [Test]
     public async Task GetByIdAsync_ShouldReturnVoivodeship()
     {
         //Arrange
-        var voivodeship = Builder<Voivodeship>.CreateNew()
-            .Build();
+        var voivodeship = Builder<Voivodeship>.CreateNew().Build();
 
-        var voivodeshipDto = Builder<VoivodeshipDto>.CreateNew()
-            .Build();
-
-        VoivodeshipRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
-            .ReturnsAsync(voivodeship);
-
-        Mapper.Setup(x => x.Map<VoivodeshipDto>(It.IsAny<Voivodeship>()))
-            .Returns(voivodeshipDto);
+        VoivodeshipRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(voivodeship);
 
         //Act
         var result = await VoivodeshipService.GetByIdAsync(1);
 
         //Assert
         VoivodeshipRepository.Verify(x => x.GetByIdAsync(1), Times.Once);
-        Assert.That(result, Is.EqualTo(voivodeshipDto));
+        Assert.That(result.Id, Is.EqualTo(voivodeship.Id));
     }
 
     [Test]
     public void GetByIdAsync_ShouldThrowVoivodeshipNotFoundException()
     {
         //Arrange
-        VoivodeshipRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>()))
-            .ReturnsAsync((Voivodeship?)null);
+        VoivodeshipRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Voivodeship?)null);
 
         //Assert
-        var exception = Assert.ThrowsAsync<VoivodeshipNotFoundException>(
-            () => VoivodeshipService.GetByIdAsync(2));
+        var exception = Assert.ThrowsAsync<VoivodeshipNotFoundException>(() => VoivodeshipService.GetByIdAsync(2));
 
         Assert.That(exception.Message, Is.EqualTo("Voivodeship with id 2 not found."));
         VoivodeshipRepository.Verify(x => x.GetByIdAsync(2), Times.Once);
@@ -104,8 +78,7 @@ public class VoivodeshipServiceTests
     public async Task ExistAnyAsync_ShouldReturnResult()
     {
         //Arrange
-        VoivodeshipRepository.Setup(x => x.ExistAnyAsync())
-            .ReturnsAsync(true);
+        VoivodeshipRepository.Setup(x => x.ExistAnyAsync()).ReturnsAsync(true);
 
         //Act
         var result = await VoivodeshipService.ExistAnyAsync();

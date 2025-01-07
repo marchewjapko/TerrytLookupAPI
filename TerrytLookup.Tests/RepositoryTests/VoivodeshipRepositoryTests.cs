@@ -8,8 +8,7 @@ namespace TerrytLookup.Tests.RepositoryTests;
 [Parallelizable(ParallelScope.Self)]
 public class VoivodeshipRepositoryTests
 {
-    private static readonly AppDbContext Context = TestContextSetup.SetupAsync()
-        .Result;
+    private static readonly AppDbContext Context = TestContextSetup.SetupAsync().Result;
 
     private static readonly VoivodeshipRepository Repository = new(Context);
 
@@ -30,8 +29,7 @@ public class VoivodeshipRepositoryTests
     public async Task AddRangeAsync_ShouldAddRange()
     {
         //Arrange
-        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10)
-            .Build();
+        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10).Build();
 
         //Act
         await Repository.AddRangeAsync(voivodeships);
@@ -44,8 +42,7 @@ public class VoivodeshipRepositoryTests
     public async Task ExistAnyAsync_ShouldReturnTrue()
     {
         //Arrange
-        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10)
-            .Build();
+        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10).Build();
 
         await Repository.AddRangeAsync(voivodeships);
 
@@ -72,22 +69,20 @@ public class VoivodeshipRepositoryTests
     public async Task GetByIdAsync_ShouldReturnVoivodeship()
     {
         //Arrange
-        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10)
-            .Build();
+        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10).Build();
 
         await Repository.AddRangeAsync(voivodeships);
 
         Assume.That(Context.Voivodeships.Count(), Is.EqualTo(10));
 
         //Act
-        var result = await Repository.GetByIdAsync(voivodeships.First()
-            .Id);
+        var result = await Repository.GetByIdAsync(voivodeships.First().Id);
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
-            Assert.That(result!.Id, Is.EqualTo(voivodeships.First()
-                .Id));
+            Assert.That(result!.Id, Is.EqualTo(voivodeships.First().Id));
         });
     }
 
@@ -105,16 +100,14 @@ public class VoivodeshipRepositoryTests
     public async Task BrowseAllAsync_ShouldReturnVoivodeships()
     {
         //Arrange
-        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10)
-            .Build();
+        var voivodeships = Builder<Voivodeship>.CreateListOfSize(10).Build();
 
         await Repository.AddRangeAsync(voivodeships);
 
         Assume.That(Context.Voivodeships.Count(), Is.EqualTo(10));
 
         //Act
-        var result = await Repository.BrowseAllAsync()
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync().ToListAsync();
 
         //Assert
         Assert.That(result, Has.Count.EqualTo(10));
@@ -124,8 +117,7 @@ public class VoivodeshipRepositoryTests
     public async Task BrowseAllAsync_ShouldReturnEmptyCollection()
     {
         //Act
-        var result = await Repository.BrowseAllAsync()
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync().ToListAsync();
 
         //Assert
         Assert.That(result, Is.Empty);

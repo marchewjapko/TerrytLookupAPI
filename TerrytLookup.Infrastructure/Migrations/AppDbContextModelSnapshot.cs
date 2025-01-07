@@ -48,9 +48,6 @@ namespace TerrytLookup.Infrastructure.Migrations
 
                     b.HasIndex("Name");
 
-                    b.HasIndex("VoivodeshipId", "CountyId")
-                        .IsUnique();
-
                     b.ToTable("Counties");
                 });
 

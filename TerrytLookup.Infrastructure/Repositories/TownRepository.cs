@@ -8,45 +8,31 @@ namespace TerrytLookup.Infrastructure.Repositories;
 
 public class TownRepository(AppDbContext context) : ITownRepository
 {
-    public Task AddRangeAsync(IList<Town> towns)
+    public Task AddRangeAsync(IEnumerable<Town> towns)
     {
         return context.BulkInsertAsync(towns);
     }
 
     public IAsyncEnumerable<Town> BrowseAllAsync(string? name = null, int? voivodeshipId = null, int? countyId = null)
     {
-        var query = context.Towns.AsNoTracking()
-            .AsQueryable();
+        var query = context.Towns.AsNoTracking().AsQueryable();
 
         if (name is not null)
-        {
-            query = query.Where(x => EF.Functions.ILike(EF.Functions.Unaccent(x.Name), EF.Functions.Unaccent($"%{name}%")));
-        }
+            query = query.Where(x =>
+                EF.Functions.ILike(EF.Functions.Unaccent(x.Name), EF.Functions.Unaccent($"%{name}%")));
 
-        if (voivodeshipId.HasValue)
-        {
-            query = query.Where(x => x.County.Voivodeship.Id == voivodeshipId);
-        }
+        if (voivodeshipId.HasValue) query = query.Where(x => x.County.Voivodeship.Id == voivodeshipId);
 
-        if (countyId.HasValue)
-        {
-            query = query.Where(x => x.County.CountyId == countyId);
-        }
+        if (countyId.HasValue) query = query.Where(x => x.County.CountyId == countyId);
 
         query = query.Where(x => x.ParentTown == null);
 
-        return query
-            .Take(AppDbContext.PageSize)
-            .Include(x => x.County)
-            .ThenInclude(x => x.Voivodeship)
-            .AsAsyncEnumerable();
+        return query.OrderBy(x => x.Name).Take(AppDbContext.PageSize).AsAsyncEnumerable();
     }
 
     public Task<Town?> GetByIdAsync(int id)
     {
-        return context.Towns.Include(x => x.County)
-            .ThenInclude(x => x.Voivodeship)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        return context.Towns.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public Task<bool> ExistAnyAsync()

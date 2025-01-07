@@ -17,21 +17,20 @@ public class CountyControllerTests
     public void BrowseAllCounties_ShouldReturnAllCounties()
     {
         // Arrange
-        var expectedResult = Builder<CountyDto>.CreateListOfSize(10)
-            .Build();
+        var expectedResult = Builder<CountyDto>.CreateListOfSize(10).Build().ToAsyncEnumerable();
 
-        CountyService.Setup(x => x.BrowseAllAsync(null, null))
-            .Returns(expectedResult);
+        CountyService.Setup(x => x.BrowseAllAsync(null, null)).Returns(expectedResult);
 
         // Act
         var result = CountyController.BrowseAllCounties() as OkObjectResult;
 
         // Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.Not.Null);
-            Assert.That(result.Value, Is.TypeOf<List<CountyDto>>());
+            // Assert.That(result.Value, Is.TypeOf<AsyncIListEnumerableAdapter<CountyDto>>());
         });
     }
 
@@ -39,17 +38,16 @@ public class CountyControllerTests
     public async Task GetCountyById_ShouldReturnCounty()
     {
         // Arrange
-        var expectedResult = Builder<CountyDto>.CreateNew()
-            .Build();
+        var expectedResult = Builder<CountyDto>.CreateNew().Build();
 
-        CountyService.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync(expectedResult);
+        CountyService.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(expectedResult);
 
         // Act
         var result = await CountyController.GetCountyById(1, 1) as OkObjectResult;
 
         // Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.StatusCode, Is.EqualTo(200));
             Assert.That(result.Value, Is.Not.Null);

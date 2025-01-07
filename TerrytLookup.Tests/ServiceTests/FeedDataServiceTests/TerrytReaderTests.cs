@@ -10,19 +10,14 @@ public class TerrytReaderTests
     private static readonly TerrytReader TerrytReader = new();
     private static readonly string FilePath = Path.Combine(Environment.CurrentDirectory, FileName);
 
-    [Test]
-    public async Task ReadAsync_ShouldReadFile()
+    [SetUp]
+    public void Setup()
     {
-        //Arrange
-        WriteToFile();
-        await using var stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
-        var formFile = new FormFile(stream, 0, stream.Length, FileName, FilePath);
+        using var outputFile = new StreamWriter(FilePath);
+        foreach (var line in TercTestFileContent.Content.Split("\r\n"))
+            outputFile.WriteLine(line);
 
-        //Act
-        var result = await TerrytReader.ReadAsync<TercDto>(formFile);
-
-        //Assert
-        Assert.That(result, Has.Count.EqualTo(10));
+        Assume.That(File.Exists(FilePath));
     }
 
     [TearDown]
@@ -38,10 +33,17 @@ public class TerrytReaderTests
         }
     }
 
-    private static void WriteToFile()
+    [Test]
+    public async Task ReadAsync_ShouldReadFile()
     {
-        using var outputFile = new StreamWriter(FilePath);
-        foreach (var line in TercTestFileContent.Content.Split("\r\n"))
-            outputFile.WriteLine(line);
+        //Arrange
+        await using var stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+        var formFile = new FormFile(stream, 0, stream.Length, FileName, FilePath);
+
+        //Act
+        var result = await TerrytReader.ReadAsync<TercDto>(formFile);
+
+        //Assert
+        Assert.That(result, Has.Count.EqualTo(100));
     }
 }

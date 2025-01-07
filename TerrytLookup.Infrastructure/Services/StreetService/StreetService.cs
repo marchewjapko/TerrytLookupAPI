@@ -1,18 +1,16 @@
-﻿using AutoMapper;
-using TerrytLookup.Core.Domain;
-using TerrytLookup.Core.Repositories;
+﻿using TerrytLookup.Core.Repositories;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 using TerrytLookup.Infrastructure.Models.Dto;
-using TerrytLookup.Infrastructure.Models.Dto.Internal.CreateDtos;
+using TerrytLookup.Infrastructure.Models.Dto.Terryt;
+using TerrytLookup.Infrastructure.Models.Mappers;
 
 namespace TerrytLookup.Infrastructure.Services.StreetService;
 
-public class StreetService(IStreetRepository streetRepository, IMapper mapper) : IStreetService
+public class StreetService(IStreetRepository streetRepository) : IStreetService
 {
-    public Task AddRange(IEnumerable<CreateStreetDto> streets)
+    public Task AddRange(IEnumerable<UlicDto> streets)
     {
-        var entities = mapper.Map<IEnumerable<Street>>(streets)
-            .ToList();
+        var entities = streets.Select(x => x.ToDomain());
 
         return streetRepository.AddRangeAsync(entities);
     }
@@ -21,12 +19,9 @@ public class StreetService(IStreetRepository streetRepository, IMapper mapper) :
     {
         var street = await streetRepository.GetByIdAsync(townId, nameId);
 
-        if (street is null)
-        {
-            throw new StreetNotFoundException(townId, nameId);
-        }
+        if (street is null) throw new StreetNotFoundException(townId, nameId);
 
-        return mapper.Map<StreetDto>(street);
+        return street.ToDto();
     }
 
     public Task<bool> ExistAnyAsync()
@@ -34,10 +29,10 @@ public class StreetService(IStreetRepository streetRepository, IMapper mapper) :
         return streetRepository.ExistAnyAsync();
     }
 
-    public IEnumerable<StreetDto> BrowseAllAsync(string? name = null, int? townId = null)
+    public IAsyncEnumerable<StreetDto> BrowseAllAsync(string? name = null, int? townId = null)
     {
         var streets = streetRepository.BrowseAllAsync(name, townId);
 
-        return mapper.Map<IEnumerable<StreetDto>>(streets).OrderBy(x => x.Name);
+        return streets.Select(x => x.ToDto());
     }
 }

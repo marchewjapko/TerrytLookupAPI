@@ -1,39 +1,34 @@
-﻿using AutoMapper;
-using TerrytLookup.Core.Domain;
-using TerrytLookup.Core.Repositories;
+﻿using TerrytLookup.Core.Repositories;
 using TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 using TerrytLookup.Infrastructure.Models.Dto;
-using TerrytLookup.Infrastructure.Models.Dto.Internal.CreateDtos;
+using TerrytLookup.Infrastructure.Models.Dto.Terryt;
+using TerrytLookup.Infrastructure.Models.Mappers;
 
 namespace TerrytLookup.Infrastructure.Services.VoivodeshipService;
 
-public class VoivodeshipService(IVoivodeshipRepository voivodeshipRepository, IMapper mapper) : IVoivodeshipService
+public class VoivodeshipService(IVoivodeshipRepository voivodeshipRepository) : IVoivodeshipService
 {
-    public Task AddRange(IEnumerable<CreateVoivodeshipDto> voivodeships)
+    public Task AddRange(IEnumerable<TercDto> voivodeships)
     {
-        var entities = mapper.Map<IEnumerable<Voivodeship>>(voivodeships)
-            .ToList();
+        var entities = voivodeships.Select(x => x.ToDomainVoivodeship());
 
         return voivodeshipRepository.AddRangeAsync(entities);
     }
 
-    public IEnumerable<VoivodeshipDto> BrowseAllAsync()
+    public IAsyncEnumerable<VoivodeshipDto> BrowseAllAsync()
     {
         var voivodeships = voivodeshipRepository.BrowseAllAsync();
 
-        return mapper.Map<IEnumerable<VoivodeshipDto>>(voivodeships).OrderBy(x => x.Name);
+        return voivodeships.Select(x => x.ToDto());
     }
 
     public async Task<VoivodeshipDto> GetByIdAsync(int id)
     {
         var voivodeship = await voivodeshipRepository.GetByIdAsync(id);
 
-        if (voivodeship is null)
-        {
-            throw new VoivodeshipNotFoundException(id);
-        }
+        if (voivodeship is null) throw new VoivodeshipNotFoundException(id);
 
-        return mapper.Map<VoivodeshipDto>(voivodeship);
+        return voivodeship.ToDto();
     }
 
     public Task<bool> ExistAnyAsync()

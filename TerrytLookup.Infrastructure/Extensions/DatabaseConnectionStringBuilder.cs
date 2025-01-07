@@ -18,59 +18,41 @@ public static class DatabaseConnectionStringBuilder
     public static string GetConnectionString(this IConfiguration configuration)
     {
         if (configuration["DatabaseType"] == "SingleUse")
-        {
-            throw new InvalidDatabaseConfigurationException("SingleUse database doesn't have an explicit connection string.");
-        }
+            throw new InvalidDatabaseConfigurationException(
+                "SingleUse database doesn't have an explicit connection string.");
 
         var user = TryGetFromConfigurationOrEnvironment(configuration, ConfigurationNameUser, EnvironmentVariableUser);
         if (user is null)
-        {
             throw new InvalidDatabaseConfigurationException(
                 $"'{ConfigurationPath}:{ConfigurationNameUser}' value missing in configuration and no \'POSTGRES_USER\' in environment variables");
-        }
 
-        var password = TryGetFromConfigurationOrEnvironment(configuration, ConfigurationNamePassword, EnvironmentVariablePassword);
+        var password =
+            TryGetFromConfigurationOrEnvironment(configuration, ConfigurationNamePassword, EnvironmentVariablePassword);
         if (password is null)
-        {
             throw new InvalidDatabaseConfigurationException(
                 $"'{ConfigurationPath}:{ConfigurationNamePassword}' value missing in configuration and no \'POSTGRES_PASSWORD\' in environment variables");
-        }
 
         var host = configuration[$"{ConfigurationPath}:{ConfigurationNameHost}"];
         if (host is null)
-        {
-            throw new InvalidDatabaseConfigurationException($"Value missing from configuration: {ConfigurationPath}:{ConfigurationNameHost}.");
-        }
+            throw new InvalidDatabaseConfigurationException(
+                $"Value missing from configuration: {ConfigurationPath}:{ConfigurationNameHost}.");
 
         var port = configuration[$"{ConfigurationPath}:{ConfigurationNamePort}"];
 
         var connectionString = $"Host={host};Username={user};Password={password}";
 
-        if (port is not null)
-        {
-            connectionString += $";Port={port}";
-        }
+        if (port is not null) connectionString += $";Port={port}";
 
         return connectionString;
     }
 
-    private static string? TryGetFromConfigurationOrEnvironment(
-        IConfiguration configuration,
-        string settingName,
+    private static string? TryGetFromConfigurationOrEnvironment(IConfiguration configuration, string settingName,
         string environmentVariable)
     {
         var configurationValue = configuration[$"{ConfigurationPath}:{settingName}"];
-        if (!string.IsNullOrWhiteSpace(configurationValue))
-        {
-            return configurationValue;
-        }
+        if (!string.IsNullOrWhiteSpace(configurationValue)) return configurationValue;
 
         var variableValue = Environment.GetEnvironmentVariable(environmentVariable);
-        if (!string.IsNullOrWhiteSpace(variableValue))
-        {
-            return variableValue;
-        }
-
-        return null;
+        return string.IsNullOrWhiteSpace(variableValue) ? null : variableValue;
     }
 }

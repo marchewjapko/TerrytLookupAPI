@@ -1,0 +1,11 @@
+version: "1.0"
+
+ide: QDNET
+
+profile:
+  name: qodana.recommended.all
+
+exclude:
+  - name: All
+    paths:
+      - TerrytLookup.Infrastructure\Migrations

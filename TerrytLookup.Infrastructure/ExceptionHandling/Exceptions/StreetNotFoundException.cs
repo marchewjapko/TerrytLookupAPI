@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TerrytLookup.Infrastructure.ExceptionHandling.Exceptions;
 
-public class StreetNotFoundException(int townId, int nameId) : Exception($"Street with id {townId}/{nameId} not found."), ICustomMappedException
+public class StreetNotFoundException(int townId, int nameId)
+    : Exception($"Street with id {townId}/{nameId} not found."), ICustomMappedException
 {
     public ProblemDetails GetProblemDetails(Exception exception)
     {

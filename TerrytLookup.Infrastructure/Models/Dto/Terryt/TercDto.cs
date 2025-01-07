@@ -2,7 +2,7 @@
 
 namespace TerrytLookup.Infrastructure.Models.Dto.Terryt;
 
-public sealed class TercDto : IEquatable<TercDto>
+public sealed class TercDto
 {
     /// <summary>
     ///     Terryt property: <c>WOJ</c>
@@ -45,41 +45,7 @@ public sealed class TercDto : IEquatable<TercDto>
     {
         string[] county = ["powiat", "miasto na prawach powiatu", "miasto stołeczne, na prawach powiatu"];
 
-        return Array.Exists(county, x => CountyId.HasValue && string.Equals(EntityType, x, StringComparison.InvariantCultureIgnoreCase));
-    }
-    
-    public bool Equals(TercDto? other)
-    {
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        return VoivodeshipId == other.VoivodeshipId && CountyId == other.CountyId;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj is null)
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-
-        return obj is TercDto dto && Equals(dto);
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(VoivodeshipId, CountyId);
+        return Array.Exists(county,
+            x => CountyId.HasValue && string.Equals(EntityType, x, StringComparison.InvariantCultureIgnoreCase));
     }
 }

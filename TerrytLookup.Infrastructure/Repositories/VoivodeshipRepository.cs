@@ -10,7 +10,7 @@ public class VoivodeshipRepository(AppDbContext context) : IVoivodeshipRepositor
 {
     public IAsyncEnumerable<Voivodeship> BrowseAllAsync()
     {
-        return context.Voivodeships.AsAsyncEnumerable();
+        return context.Voivodeships.OrderBy(x => x.Name).AsAsyncEnumerable();
     }
 
     public Task<Voivodeship?> GetByIdAsync(int id)

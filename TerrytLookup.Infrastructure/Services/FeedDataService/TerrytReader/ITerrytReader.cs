@@ -4,5 +4,5 @@ namespace TerrytLookup.Infrastructure.Services.FeedDataService.TerrytReader;
 
 public interface ITerrytReader
 {
-    Task<HashSet<T>> ReadAsync<T>(IFormFile terrytCsvFile);
+    Task<List<T>> ReadAsync<T>(IFormFile terrytCsvFile);
 }

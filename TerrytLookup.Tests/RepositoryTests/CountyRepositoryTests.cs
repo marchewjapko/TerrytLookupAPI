@@ -9,16 +9,14 @@ namespace TerrytLookup.Tests.RepositoryTests;
 [Parallelizable(ParallelScope.Self)]
 public class CountyRepositoryTests
 {
-    private static readonly AppDbContext Context = TestContextSetup.SetupAsync()
-        .Result;
+    private static readonly AppDbContext Context = TestContextSetup.SetupAsync().Result;
 
     private static readonly CountyRepository Repository = new(Context);
 
     [SetUp]
     public void Setup()
     {
-        Context.Voivodeships.Add(Builder<Voivodeship>.CreateNew()
-            .Build());
+        Context.Voivodeships.Add(Builder<Voivodeship>.CreateNew().Build());
 
         Context.SaveChanges();
 
@@ -38,10 +36,8 @@ public class CountyRepositoryTests
     public async Task AddRangeAsync_ShouldAddRange()
     {
         //Arrange
-        var counties = Builder<County>.CreateListOfSize(10)
-            .All()
-            .With(x => x.VoivodeshipId = 1)
-            .Build();
+        var counties = new Faker<County>().RuleFor(x => x.CountyId, f => f.IndexFaker)
+            .RuleFor(x => x.Name, f => f.Address.County()).RuleFor(x => x.VoivodeshipId, _ => 1).Generate(10);
 
         //Act
         await Repository.AddRangeAsync(counties);
@@ -54,13 +50,11 @@ public class CountyRepositoryTests
     public async Task ExistAnyAsync_ShouldReturnTrue()
     {
         //Arrange
-        var counties = Builder<County>.CreateListOfSize(10)
-            .All()
-            .With(x => x.VoivodeshipId = 1)
-            .Build();
+        var counties = new Faker<County>().RuleFor(x => x.CountyId, f => f.IndexFaker)
+            .RuleFor(x => x.Name, f => f.Address.County()).RuleFor(x => x.VoivodeshipId, _ => 1).Generate(10);
 
         Context.AddRange(counties);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         Assume.That(Context.Counties, Is.Not.Empty);
 
@@ -85,19 +79,16 @@ public class CountyRepositoryTests
     public async Task BrowseAllAsync_ShouldReturnAllCounties()
     {
         //Arrange
-        var counties = Builder<County>.CreateListOfSize(10)
-            .All()
-            .With(x => x.VoivodeshipId = 1)
-            .Build();
+        var counties = new Faker<County>().RuleFor(x => x.CountyId, f => f.IndexFaker)
+            .RuleFor(x => x.Name, f => f.Address.County()).RuleFor(x => x.VoivodeshipId, _ => 1).Generate(10);
 
         Context.AddRange(counties);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         Assume.That(Context.Counties, Is.Not.Empty);
 
         //Act
-        var result = await Repository.BrowseAllAsync()
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync().ToListAsync();
 
         //Assert
         Assert.That(result, Has.Count.EqualTo(10));
@@ -109,29 +100,29 @@ public class CountyRepositoryTests
         //Arrange
         const string filterName = "ThisOne!";
 
-        var counties = Builder<County>.CreateListOfSize(10)
-            .All()
-            .With(x => x.VoivodeshipId = 1)
-            .TheFirst(1)
-            .With(x => x.Name = filterName)
-            .TheRest()
-            .With(x => x.Name = "NotThisOne:/")
-            .Build();
+        var counties = new Faker<County>().RuleFor(x => x.VoivodeshipId, _ => 1)
+            .RuleFor(x => x.CountyId, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.County()).Generate(10);
+
+        var validCounty = new Faker<County>().RuleFor(x => x.VoivodeshipId, _ => 1)
+            .RuleFor(x => x.Name, _ => filterName).RuleFor(x => x.CountyId, _ => counties.Max(x => x.CountyId) + 1)
+            .Generate();
+
+        counties.Add(validCounty);
 
         Context.AddRange(counties);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         Assume.That(Context.Counties, Is.Not.Empty);
 
         //Act
-        var result = await Repository.BrowseAllAsync(filterName)
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync(filterName).ToListAsync();
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result[0].Name, Is.EqualTo(filterName));
-            Assert.That(result[0].CountyId, Is.EqualTo(counties[0].CountyId));
+            Assert.That(result[0].CountyId, Is.EqualTo(validCounty.CountyId));
         });
     }
 
@@ -139,31 +130,32 @@ public class CountyRepositoryTests
     public async Task BrowseAllAsync_ShouldFilterByVoivodeshipId()
     {
         //Arrange
-        var newVoivodeship = Builder<Voivodeship>.CreateNew()
-            .With(x => x.Id = 3)
-            .With(x => x.Name = new Faker().Random.Word())
-            .Build();
+        var newVoivodeship = new Faker<Voivodeship>().RuleFor(x => x.Id, _ => 3)
+            .RuleFor(x => x.Name, f => f.Address.State()).Generate();
+
         Context.Voivodeships.Add(newVoivodeship);
 
-        var counties = Builder<County>.CreateListOfSize(10)
-            .TheFirst(7)
-            .With(x => x.VoivodeshipId = 1)
-            .TheRest()
-            .With(x => x.VoivodeshipId = 3)
-            .Build();
+        var counties = new Faker<County>().RuleFor(x => x.VoivodeshipId, _ => 1)
+            .RuleFor(x => x.CountyId, f => f.IndexFaker).RuleFor(x => x.Name, f => f.Address.County()).Generate(7);
+
+        var validCounties = new Faker<County>().RuleFor(x => x.VoivodeshipId, _ => 3)
+            .RuleFor(x => x.CountyId, f => counties.Max(x => x.CountyId) + f.IndexFaker)
+            .RuleFor(x => x.Name, f => f.Address.County()).Generate(3);
+
+        counties.AddRange(validCounties);
 
         Context.AddRange(counties);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         Assume.That(Context.Counties, Is.Not.Empty);
         Assume.That(Context.Voivodeships.Count(), Is.EqualTo(2));
 
         //Act
-        var result = await Repository.BrowseAllAsync(voivodeshipId: newVoivodeship.Id)
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync(voivodeshipId: newVoivodeship.Id).ToListAsync();
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Has.Count.EqualTo(3));
             Assert.That(result.All(x => x.VoivodeshipId == newVoivodeship.Id), Is.True);
         });
@@ -173,8 +165,7 @@ public class CountyRepositoryTests
     public async Task BrowseAllAsync_ShouldReturnEmptyCollection()
     {
         //Act
-        var result = await Repository.BrowseAllAsync()
-            .ToListAsync();
+        var result = await Repository.BrowseAllAsync().ToListAsync();
 
         //Assert
         Assert.That(result, Is.Empty);
@@ -184,26 +175,21 @@ public class CountyRepositoryTests
     public async Task GetByIdAsync_ShouldReturnCounty()
     {
         //Arrange
-        var counties = Builder<County>.CreateListOfSize(10)
-            .All()
-            .With(x => x.VoivodeshipId = 1)
-            .Build();
+        var counties = new Faker<County>().RuleFor(x => x.CountyId, f => f.IndexFaker)
+            .RuleFor(x => x.VoivodeshipId, _ => 1).RuleFor(x => x.Name, f => f.Address.County()).Generate(10);
 
         Context.AddRange(counties);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
         //Act
-        var result = await Repository.GetByIdAsync(counties.First()
-            .CountyId, counties.First()
-            .VoivodeshipId);
+        var result = await Repository.GetByIdAsync(counties.First().VoivodeshipId, counties.First().CountyId);
 
         //Assert
-        Assert.Multiple(() => {
+        Assert.Multiple(() =>
+        {
             Assert.That(result, Is.Not.Null);
-            Assert.That(result!.CountyId, Is.EqualTo(counties.First()
-                .CountyId));
-            Assert.That(result.VoivodeshipId, Is.EqualTo(counties.First()
-                .VoivodeshipId));
+            Assert.That(result!.CountyId, Is.EqualTo(counties.First().CountyId));
+            Assert.That(result.VoivodeshipId, Is.EqualTo(counties.First().VoivodeshipId));
         });
     }
 
