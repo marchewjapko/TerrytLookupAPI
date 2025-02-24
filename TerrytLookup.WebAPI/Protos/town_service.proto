@@ -1,0 +1,45 @@
+﻿syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "Protos/county_service.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "TerrytLookup.gRPCServices";
+
+service TownApiService {
+  rpc BrowseAll (BrowseAllTownsRequest) returns (BrowseAllTownsResponse) {
+    option (google.api.http) = {
+      get: "/TownService/BrowseAll"
+    };
+  };
+  rpc GetById (GetTownsByIdRequest) returns (GetTownsByIdResponse) {
+    option (google.api.http) = {
+      get: "/TownService/GetById"
+    };
+  };
+}
+
+message BrowseAllTownsRequest {
+  optional google.protobuf.StringValue name = 1;
+  optional google.protobuf.Int32Value voivodeshipId = 2;
+  optional google.protobuf.Int32Value countyId = 3;
+}
+
+message BrowseAllTownsResponse {
+  repeated TownResponse result = 1;
+}
+
+message GetTownsByIdRequest {
+  int32 townId = 1;
+}
+
+message GetTownsByIdResponse {
+  TownResponse result = 1;
+}
+
+
+message TownResponse {
+  int32 id = 1;
+  string name = 3;
+  CountyResponse county = 4;
+}

@@ -1,0 +1,46 @@
+﻿syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "Protos/town_service.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "TerrytLookup.gRPCServices";
+
+service StreetApiService {
+  rpc BrowseAll (BrowseAllStreetsRequest) returns (BrowseAllStreetsResponse) {
+    option (google.api.http) = {
+      get: "/StreetApiService/BrowseAll"
+    };
+  };
+  rpc GetById (GetStreetByIdRequest) returns (GetStreetByIdResponse) {
+    option (google.api.http) = {
+      get: "/StreetApiService/GetById"
+    };
+  };
+}
+
+message BrowseAllStreetsRequest {
+  optional google.protobuf.StringValue name = 1;
+  optional google.protobuf.Int32Value townId = 2;
+}
+
+message BrowseAllStreetsResponse {
+  repeated StreetResponse result = 1;
+}
+
+message GetStreetByIdRequest {
+  int32 townId = 1;
+  int32 nameId = 2;
+}
+
+message GetStreetByIdResponse {
+  StreetResponse result = 1;
+}
+
+
+message StreetResponse {
+    string name = 1;
+    int32 nameId = 2;
+    int32 townId = 3;
+    TownResponse town = 4;
+}

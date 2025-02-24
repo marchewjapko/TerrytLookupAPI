@@ -13,9 +13,14 @@ public class County : BaseEntity
 
     public int CountyId { get; init; }
 
+    [MaxLength(100)]
     public required string Name { get; init; }
 
-    [Required] public virtual Voivodeship Voivodeship { get; init; } = null!;
+    [MaxLength(100)]
+    public required string NormalizedName { get; set; }
+
+    [Required]
+    public virtual Voivodeship Voivodeship { get; init; } = null!;
 
     public virtual ICollection<Town> Towns { get; init; } = new List<Town>();
 }

@@ -1,0 +1,54 @@
+﻿syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "Protos/voivodeship_service.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "TerrytLookup.gRPCServices";
+
+// My amazing greeter service.
+service CountyApiService {
+  // Sends a greeting.
+  rpc BrowseAll (BrowseAllCountiesRequest) returns (BrowseAllCountiesResponse) {
+    option (google.api.http) = {
+      get: "/CountyService/BrowseAll"
+    };
+  };
+  // Sends a greeting 2323.
+  rpc GetById (GetCountyByIdRequest) returns (GetCountyByIdResponse) {
+    option (google.api.http) = {
+      get: "/CountyService/GetById"
+    };
+  };
+}
+
+message BrowseAllCountiesRequest {
+  // Name to say hello to 2a.
+  optional google.protobuf.StringValue name = 1;
+  optional google.protobuf.Int32Value voivodeshipId = 2;
+}
+
+message BrowseAllCountiesResponse {
+  // Name to say hello to 2.
+  repeated CountyResponse result = 1;
+}
+
+message GetCountyByIdRequest {
+  // Name to say hello to 1a.
+  int32 voivodeshipId = 1;
+  int32 countyId = 2;
+}
+
+message GetCountyByIdResponse {
+  // Name to say hello to 1.
+  CountyResponse result = 1;
+}
+
+
+message CountyResponse {
+  // This is county response hehe.
+  int32 countyId = 1;
+  int32 voivodeshipId = 2;
+  string name = 3;
+  VoivodeshipResponse voivodeship = 4;
+}

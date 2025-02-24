@@ -5,7 +5,7 @@ namespace TerrytLookup.Infrastructure.Repositories.DbContext;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : Microsoft.EntityFrameworkCore.DbContext(options)
 {
-    public const int PageSize = 20;
+    public const string ConnectionStringSectionName = "DbConnectionString";
 
     public DbSet<Voivodeship> Voivodeships { get; init; }
 
@@ -22,16 +22,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : Microsoft.En
         base.OnModelCreating(modelBuilder);
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseLazyLoadingProxies();
-    }
-
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
-        var entries = ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Modified);
+        var entries = ChangeTracker
+            .Entries<BaseEntity>()
+            .Where(e => e.State == EntityState.Modified);
 
-        foreach (var entry in entries) entry.Entity.UpdateTimestamp = DateTimeOffset.UtcNow;
+        foreach (var entry in entries)
+            entry.Entity.UpdateTimestamp = DateTimeOffset.UtcNow;
 
         return base.SaveChangesAsync(cancellationToken);
     }

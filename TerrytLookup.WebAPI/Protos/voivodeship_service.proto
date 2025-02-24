@@ -1,0 +1,43 @@
+﻿syntax = "proto3";
+
+import "google/api/annotations.proto";
+
+option csharp_namespace = "TerrytLookup.gRPCServices";
+
+//Service for managing voivodeship-related operations.
+service VoivodeshipsApiService {
+  // Sends a greeting.
+  rpc BrowseAll (BrowseAllVoivodeshipsRequest) returns (BrowseAllVoivodeshipsResponse) {
+    option (google.api.http) = {
+      get: "/VoivodeshipService/BrowseAll"
+    };
+  };
+  // Sends a greeting 2.
+  rpc GetById (GetVoivodeshipByIdRequest) returns (GetVoivodeshipByIdResponse) {
+    option (google.api.http) = {
+      get: "/VoivodeshipService/GetById"
+    };
+  };
+}
+
+// Name to say hello to.
+message BrowseAllVoivodeshipsRequest {
+}
+
+// Hello reply message.
+message BrowseAllVoivodeshipsResponse {
+  repeated VoivodeshipResponse result = 1;
+}
+
+message GetVoivodeshipByIdRequest {
+  int32 id = 1;
+}
+
+message GetVoivodeshipByIdResponse {
+  VoivodeshipResponse result = 1;
+}
+
+message VoivodeshipResponse {
+    int32 id = 1;
+    string name = 2;
+}

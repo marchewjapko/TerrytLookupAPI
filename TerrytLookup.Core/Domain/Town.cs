@@ -13,11 +13,16 @@ public class Town : BaseEntity
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int Id { get; init; }
 
+    [MaxLength(100)]
     public required string Name { get; init; }
+
+    [MaxLength(100)]
+    public required string NormalizedName { get; set; }
 
     public int? ParentTownId { get; init; }
 
-    [ForeignKey("ParentTownId")] public virtual Town? ParentTown { get; init; }
+    [ForeignKey("ParentTownId")]
+    public virtual Town? ParentTown { get; init; }
 
     public int CountyId { get; init; }
 

@@ -1,0 +1,46 @@
+﻿using CsvHelper.Configuration.Attributes;
+
+namespace TerrytLookup.UseCases.Dtos.Dto.Terryt;
+
+public sealed record UlicDto
+{
+    /// <summary>
+    ///     Terryt property: <c>SYM</c>
+    /// </summary>
+    [Name("SYM")]
+    public required int TownId { get; init; }
+
+    /// <summary>
+    ///     Terryt property: <c>SYM_UL</c>
+    /// </summary>
+    /// <remarks>
+    ///     This property is used to identify a street's name, not the street itself.
+    ///     Thusly it is not unique
+    /// </remarks>
+    [Name("SYM_UL")]
+    public required int StreetNameId { get; init; }
+
+    /// <summary>
+    ///     Terryt property: <c>CECHA</c>
+    /// </summary>
+    [Name("CECHA")]
+    public required string StreetPrefix { get; init; }
+
+    /// <summary>
+    ///     Terryt property: <c>NAZWA_1</c>
+    /// </summary>
+    [Name("NAZWA_1")]
+    public required string StreetNameFirstPart { get; init; }
+
+    /// <summary>
+    ///     Terryt property: <c>NAZWA_2</c>
+    /// </summary>
+    [Name("NAZWA_2")]
+    public string? StreetNameSecondPart { get; init; }
+
+    /// <summary>
+    ///     Terryt property: <c>STAN_NA</c>
+    /// </summary>
+    [Name("STAN_NA")]
+    public required DateOnly ValidFromDate { get; init; }
+}

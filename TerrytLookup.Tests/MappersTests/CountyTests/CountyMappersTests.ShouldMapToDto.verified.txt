@@ -1,9 +1,0 @@
-﻿{
-  Name: Warszawa,
-  VoivodeshipId: 14,
-  CountyId: 65,
-  Voivodeship: {
-    Id: 1,
-    Name: Mazowieckie
-  }
-}

@@ -17,7 +17,7 @@ services:
   
   terryt-lookup-api-db:
     container_name: terryt-lookup-api-db
-    image: "postgres:latest"
+    image: "postgres:17.2"
     ports:
       - "5432"
     volumes:
